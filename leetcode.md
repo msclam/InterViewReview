@@ -100,6 +100,258 @@ public String replaceSpace(String ss) {
 
 
 
+## 06 从尾到头打印链表
+
+```java
+输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+// 方式一： 求全长，倒着放在数组中 
+// 方式二:  使用栈    
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] reversePrint(ListNode head) {
+        // Stack<Integer> st = new Stack<>();
+        // while (head != null) {
+        //     st.push(head.val);
+        //     head = head.next;
+        // }
+        // int idx = 0;
+        // int[] res = new int[st.size()];
+        // while (!st.isEmpty()) {
+        //     res[idx++] = st.pop();
+        // }
+        // return res;
+
+        ListNode cur = head;
+        int n = 0;
+        while (cur != null) {
+            cur = cur.next;
+            n++;
+        }
+
+        int idx = n - 1;
+        int[] res = new int[n];
+        while (head != null) {
+            res[idx--] = head.val;
+            head = head.next;
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 07 重建二叉树
+
+```java
+题目一： 从前序与中序遍历序列构造二叉树
+前： [1] 2  k k + 1 n
+中:  1 k - 1  [k] k + 1  n
+// 优化： 中序数字的下标用hash存储
+class Solution {
+    Map<Integer, Integer> mp = new HashMap<>();
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        for (int i = 0; i < inorder.length; i ++ ) {
+            mp.put(inorder[i], i);
+        }
+        return create(preorder, inorder, 0, preorder.length - 1, 0, inorder.length - 1);
+    }
+
+    private TreeNode create(int[] preorder, int[] inorder, int preL, int preR, int inL, int inR) {
+        if (preL > preR) return null;
+
+        int root = preorder[preL];
+        int k = mp.get(root);
+        // for (k = inL; k <= inR; k ++ ) {
+        //     if (root == inorder[k]) {
+        //         break;
+        //     }
+        // }
+        int numL = k - inL;
+
+        TreeNode node = new TreeNode(root);
+        node.left = create(preorder, inorder, preL + 1, preL + numL, inL, k - 1);
+        node.right = create(preorder, inorder, preL + numL + 1, preR, k + 1, inR);
+
+        return node;
+    }
+}
+
+题目二： 从后序与中序遍历序列构造二叉树
+后： 1   k - 1 k  n - 1  n
+中:  1 k - 1  [k] k + 1  n 
+// 优化： 中序数字的下标用hash存储
+class Solution {
+    Map<Integer, Integer> mp = new HashMap<>();
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        for (int i = 0; i < inorder.length; i ++ ) {
+            mp.put(inorder[i], i);
+        }
+        return create(postorder, inorder, 0, postorder.length - 1, 0, inorder.length - 1);
+    }
+
+    private TreeNode create(int[] postorder, int[] inorder, int postL, int postR, int inL, int inR) {
+        if (postL > postR) return null;
+
+        int root = postorder[postR];
+        int k = mp.get(root);
+        // for (k = inL; k <= inR; k ++ ) {
+        //     if (root == inorder[k]) {
+        //         break;
+        //     }
+        // }
+        int numL = k - inL;
+        
+        TreeNode node = new TreeNode(root);
+        node.left = create(postorder, inorder, postL, postL + numL - 1, inL, k - 1);
+        node.right = create(postorder, inorder, postL + numL, postR - 1, k + 1, inR);
+
+        return node; 
+    }
+}
+```
+
+
+
+## 09 用两个栈实现队列
+
+```java
+用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+
+class CQueue {
+    private Stack<Integer> st1;
+    private Stack<Integer> st2;
+
+    public CQueue() {
+        st1 = new Stack<>();
+        st2 = new Stack<>();
+    }
+    
+    public void appendTail(int value) {
+        st1.push(value);
+    }
+    
+    public int deleteHead() {
+        if (st2.isEmpty()) {
+            while (!st1.isEmpty()) {
+                st2.push(st1.pop());
+            }
+        }
+        if (st2.isEmpty()) {
+            return -1;
+        } else {
+            int res = st2.pop();
+            return res;
+        }
+    }
+}
+```
+
+
+
+## 10-I  斐波那契数列
+
+```java
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+// 注意： return a 且 F[0] = 0   F[1] = 1  
+class Solution {
+    public int fib(int n) {
+        // if (n == 0) return n;
+        // if (n == 1) return n;
+
+        // int[] f = new int[n + 1];
+        // f[0] = 0;
+        // f[1] = 1;
+        // for (int i = 2; i <= n; i ++ ) {
+        //     f[i] = (int) (f[i - 1] + f[i - 2]) % 1000000007;
+        // }
+        // return f[n];
+
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+
+        int a = 0, b = 1;
+        for (int i = 0; i < n; i ++ ) {
+            int sum = (a + b) % 1000000007;
+            a = b;
+            b = sum;
+        }
+        return a;
+    }
+}
+```
+
+
+
+## 10-II 青蛙跳台阶问题
+
+```java
+一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+
+// 注意： return b 且 F[0] = F[1] = 1
+class Solution {
+    public int numWays(int n) {
+        // if(n == 0 || n == 1) return 1;
+
+        // int[] f = new int[n + 1];
+        // f[0] = f[1] = 1;
+        // for (int i = 2; i <= n; i ++ ) {
+        //     f[i] = (int)((f[i - 1] + f[i - 2]) % 1000000007);
+        // }
+        // return f[n];
+
+
+        if (n == 0 || n == 1) return 1;
+        int a = 0, b = 1;
+        for (int i = 0; i < n; i ++ ) {
+            int sum = (a + b) % 1000000007;
+            a = b;
+            b = sum;
+        }
+        return b;
+    }
+}
+```
+
+
+
+## 11 旋转数组的最小数字
+
+```java
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组  [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为 1。
+// 二分法 + 去除重复
+class Solution {
+    public int minArray(int[] A) {
+        int l = 0, r = A.length - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (A[mid] > A[r]) {
+                l = mid + 1;
+            } else if (A[mid] < A[r]) {
+                r = mid;
+            } else {
+                r--;
+            }
+        }
+        return A[l];
+    }
+}
+```
+
+
+
 ## 12 矩阵中的路径
 
 ```java
@@ -154,9 +406,61 @@ class Solution {
 
 
 
+## 
+
 ## 19 正则表达式匹配
 
 ```java
+请实现一个函数用来匹配包含'. '和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（含 0 次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。
+
+/*
+情况一
+f[i][j] = f[i][j] || f[i - 1][j - 1]
+aaa
+ba.
+  a
+
+情况二
+f[i][j] = f[i][j] || f[i][j - 2](.* or a*表示空)
+aaa
+ba*
+b.*
+
+f[i][j] = f[i][j] || f[i - 1][j](.* or a*表示非空)
+*/
+    
+class Solution {
+    public boolean isMatch(String ss, String pp) {
+        char[] s = ss.toCharArray();
+        char[] p = pp.toCharArray();
+        boolean[][] f = new boolean[s.length + 1][p.length + 1];
+        for (int i = 0; i <= s.length; i ++ ) {
+            for (int j = 0; j <= p.length; j ++ ) {
+                if (i == 0 && j == 0) {
+                    f[i][j] = true;
+                    continue;
+                }
+                if (i != 0 && j == 0) {
+                    f[i][j] = false;
+                    continue;
+                }
+                f[i][j] = false;
+                if (p[j - 1] != '*') {
+                    if (i >= 1 && (p[j - 1] == '.' || p[j - 1] == s[i - 1])) {
+                        f[i][j] = f[i][j] || f[i - 1][j - 1];
+                    }
+                } else {
+                    if (j >= 2) f[i][j] = f[i][j] || f[i][j - 2];
+                    if (j >= 2 && i >= 1 && 
+                        (p[j - 2] == '.' || p[j - 2] == s[i - 1])) {
+                        f[i][j] = f[i][j] || f[i - 1][j];
+                    }
+                }
+            } 
+        }
+        return f[s.length][p.length];
+    }
+}
 ```
 
 
