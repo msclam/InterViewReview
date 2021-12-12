@@ -406,7 +406,234 @@ class Solution {
 
 
 
-## 
+## 13 机器人的运动范围
+
+```java
+地上有一个 m 行 n 列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于 k 的格子。例如，当 k 为 18 时，机器人能够进入方格 [35, 37] ，因为 3+5+3+7=18。但它不能进入方格 [35, 38]，因为 3+5+3+8=19。请问该机器人能够到达多少个格子？
+
+// dfs 
+class Solution {
+    private int m;
+    private int n;
+    private int k;
+    private int cnt;
+    private boolean[][] vis;
+    private int[] X = {0, 0, 1, -1};
+    private int[] Y = {1, -1, 0, 0};
+    public int movingCount(int m, int n, int k) {
+        this.m = m;
+        this.n = n;
+        this.k = k;
+        cnt = 0;
+        vis = new boolean[m][n];
+        dfs(0, 0);
+        return cnt;
+    }
+
+    private void dfs(int x, int y) {
+        if (x < 0 || x >= m || y < 0 || y >= n) return;
+        if (vis[x][y] || getSum(x) + getSum(y) > k) return;
+        cnt++;
+        vis[x][y] = true;
+        for (int i = 0; i < 4; i ++ ) {
+            int nx = X[i] + x;
+            int ny = Y[i] + y;
+            dfs(nx, ny);
+        }
+    }
+
+    private int getSum(int n) {
+        int res = 0;
+        while (n != 0) {
+            res += n % 10;
+            n /= 10;
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 14-I 剪绳子
+
+```java
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n 都是整数，n>1 并且 m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是 8 时，我们把它剪成长度分别为 2、3、3 的三段，此时得到的最大乘积是 18。
+
+// 尽可能将绳子以长度 3 等分剪为多段时，乘积最大。    
+class Solution {
+    public int cuttingRope(int n) {
+        // if (n == 1) return 1;
+        // if (n == 2) return 1;
+        // if (n == 3) return 2;
+
+        // int[] f = new int[n + 1];
+        // f[1] = 1;
+        // f[2] = 2;
+        // f[3] = 3;
+        // for (int i = 4; i <= n; i ++ ) {
+        //     for (int j = 1; j <= i / 2; j ++ ) {
+        //         f[i] = Math.max(f[i], f[j] * f[i - j]);
+        //     }
+        // }
+        // return f[n];
+
+        if (n == 1) return 1;
+        if (n == 2) return 1;
+        if (n == 3) return 2;
+
+        int res = 1;
+        while (n > 4) {
+            res *= 3;
+            n -= 3;
+        }
+        return res * n;
+    }
+}
+```
+
+
+
+## 14-ii 剪绳子
+
+```java
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m - 1] 。请问 k[0]*k[1]*...*k[m - 1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+class Solution {
+    public int cuttingRope(int n) {
+        if (n == 1) return 1;
+        if (n == 2) return 1;
+        if (n == 3) return 2;
+        long res = 1;
+        while (n > 4) {
+            res = (res * 3) % 1000000007;
+            n -= 3;
+        }
+        return (int)((res * n) % 1000000007);
+    }
+}
+```
+
+
+
+## 15 二进制中1的个数
+
+```java
+// java
+public class Solution {
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int cnt = 0; 
+        while (n != 0) {
+            n &= (n - 1);
+            cnt++;
+        }
+        return cnt;
+    }
+}
+
+// c++
+class Solution {
+public:
+    int hammingWeight(uint32_t n) {
+        uint32_t flag = 1;
+        int res = 0;
+        while (flag) {
+            if (flag & n) res ++;
+            flag <<= 1;
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 16 数值的整数次方
+
+```java
+实现函数 double Power(double base, int exponent)，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。
+    
+class Solution {
+    public double myPow(double x, int n) {
+        long m = n;
+        if (m < 0) {
+            x = 1 / x;
+            m = -m;
+        }
+        double res = 1.0;
+        while (m != 0) {
+            if (m % 2 != 0) res *= x;
+            x = x * x;
+            m >>= 1; 
+        }
+        return res;
+    }
+}
+```
+
+ 
+
+## 17 打印从1到最大的n位数
+
+```java
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+    
+class Solution {
+    public int[] printNumbers(int n) {
+        int num = (int) Math.pow(10, n) - 1;
+        int[] res = new int[num];
+        for (int i = 0; i < num; i ++ ) {
+            res[i] = i + 1;
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 18 删除链表的节点
+
+```java
+给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
+返回删除后的链表的头节点。
+
+// 新头节点 + head（在原链表操作）
+// 新头节点 + 原链表节点（符合条件）
+    
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode dummyNode = new ListNode(0);
+        dummyNode.next = head;
+        ListNode pre = dummyNode;
+
+        while (pre.next != null && pre.next.val != val) {
+            pre = pre.next;
+        }
+
+        if (pre.next == null) {
+            pre.next = null;
+        } else {
+            pre.next = pre.next.next;
+        }
+
+        return dummyNode.next;
+    }
+}
+```
+
+
 
 ## 19 正则表达式匹配
 
@@ -465,8 +692,6 @@ class Solution {
 
 
 
-
-
 ## 20 表示数值的字符串
 
 ```java
@@ -511,8 +736,6 @@ class Solution {
     }
 }
 ```
-
-
 
 
 
