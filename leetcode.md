@@ -839,5 +839,185 @@ class Solution {
 
 
 
+## 25 合并两个排序的链表
+
+```java
+// 归并排序的思路
+// 注意剩下链表的链接
+
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummyNode = new ListNode(0);
+        ListNode cur = dummyNode;
+
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                cur.next = l1;
+                l1 = l1.next;
+            } else {
+                cur.next = l2;
+                l2 = l2.next;
+            }
+            cur = cur.next;
+        }
+        cur.next = l1 != null ? l1 : l2;
+        return dummyNode.next;
+    }
+```
+
+
+
+## 26 树的子结构
+
+```java
+// 先判断是否相等，然后左子树是否存在，最后右子树是否存在
+
+class Solution {
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        if (B == null || A == null) return false;
+        return isSubStructure(A.left, B) || isSubStructure(A.right, B) || check(A, B);    
+    }
+
+    private check(TreeNode A, TreeNode B) { // 判断是否相等
+        if (B == null) return true;
+        if (A == null && B != null) return false;
+        if (A.val != B.val) return false; 
+
+        return check(A.left, B.left) && check(A.right, B.right);
+    }
+}
+```
+
+
+
+## 27 二叉树的镜像
+
+```java
+//请完成一个函数，输入一个二叉树，该函数输出它的镜像。
+// 先序遍历
+class Solution {
+    public TreeNode mirrorTree(TreeNode root) {
+        if (root == null) return null;
+
+        TreeNode tmp =  root.left;
+        root.left = root.right;
+        root.right = tmp;
+
+        mirrorTree(root.left);
+        mirrorTree(root.right);
+
+        return root;
+    }
+}
+```
+
+
+
+## 28 对称的二叉树
+
+```java
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) return true;
+        return isSymmetric(root.left, root.right);
+    }
+
+    private boolean isSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        if (left != null && right == null) return false;
+        if (left == null && right != null) return false;
+        if (left.val != right.val) return false;
+
+        return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
+    }
+}
+```
+
+
+
+## 29 顺时针打印矩阵
+
+```java
+// 注意不变的量，控制变量
+
+class Solution {
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return new int[]{};
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] res = new int[m * n];
+        int idx = 0;
+        int t = 0, b = m - 1;
+        int l = 0, r = n - 1;
+        while (true) {
+            for (int i = l; i <= r; i ++ ) {
+                res[idx++] = matrix[t][i];
+            }
+            if (++t > b) break;
+
+            for (int i = t; i <= b; i ++ ) {
+                res[idx++] = matrix[i][r];
+            }
+            if (--r < l) break;
+
+            for (int i = r; i >= l; i -- ) {
+                res[idx++] = matrix[b][i];
+            }
+            if (--b < t) break;
+
+            for (int i = b; i >= t; i -- ) {
+                res[idx++] = matrix[i][l];
+            }
+            if (++l > r) break;
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 30 包含min函数的栈
+
+```java
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+
+class MinStack {
+    private Stack<Integer> data;
+    private Stack<Integer> minSt;
+
+    /** initialize your data structure here. */
+    public MinStack() {
+        data = new Stack<>();
+        minSt = new Stack<>();
+    }
+    
+    public void push(int x) {
+        data.push(x);
+        if (minSt.isEmpty() || x < minSt.peek()) {
+            minSt.push(x);
+        } else {
+            minSt.push(minSt.peek());
+        }
+    }
+    
+    public void pop() {
+        data.pop();
+        minSt.pop();
+    }
+    
+    public int top() {
+        return data.peek();
+    }
+    
+    public int min() {
+        return minSt.peek();
+    }
+}
+```
+
+
+
 # Carl习题集
 
