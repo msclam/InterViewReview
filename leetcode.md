@@ -1019,5 +1019,342 @@ class MinStack {
 
 
 
+## 31 栈的压入、弹出序列
+
+```java
+// 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2} 就不可能是该压栈序列的弹出序列。
+
+// 直接使用栈模拟，如果栈顶等于弹出序列就弹出
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> st = new Stack<>();
+        int j = 0;
+        for (int i = 0; i < pushed.length; i ++ ) {
+            st.push(pushed[i]);
+            while (!st.isEmpty() && st.peek() == popped[j]) {
+                st.pop();
+                j++;
+            }
+        }
+        return st.isEmpty();
+    }
+}
+```
+
+
+
+## 32-i 从上到下打印二叉树
+
+```java
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。结果返回：[3,9,20,15,7]
+
+// 层次遍历，注意返回的是int[]数组，最后需要转化
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] levelOrder(TreeNode root) {
+        if (root == null) return new int[0];
+        Queue<TreeNode> q = new LinkedList<>();
+        List<Integer> res = new ArrayList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            int n = q.size();
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = q.poll();
+                res.add(node.val);
+                if (node.left != null) q.offer(node.left);
+                if (node.right != null) q.offer(node.right);
+            }
+        }
+        int[] ans = new int[res.size()];
+        for (int i = 0; i < res.size(); i ++ ) {
+            ans[i] = res.get(i);
+        }
+        return ans;
+    }
+}
+```
+
+
+
+## 32-ii 从上到下打印二叉树ii
+
+```java
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+/*
+结果返回
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            int n = q.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = q.poll();
+                list.add(node.val);
+                if (node.left != null) q.offer(node.left);
+                if (node.right != null) q.offer(node.right);
+            }
+            res.add(list);
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 32-iii 从上到下打印二叉树
+
+```java
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+    
+// 奇数行不变，偶数行逆转(Collections.reverse(list))
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        int dep = 0;
+        q.add(root);
+        while (!q.isEmpty()) {
+            int n = q.size();
+            List<Integer> row = new ArrayList<>();
+            dep++;
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = q.poll();
+                row.add(node.val);
+                if (node.left != null) q.add(node.left);
+                if (node.right != null) q.add(node.right);
+            }
+            if (dep % 2 == 0) {
+                Collections.reverse(row);
+                res.add(row);
+            } else {
+                res.add(row);
+            }
+        }
+        return res;
+    }
+} 
+```
+
+
+
+## 33 二叉搜索树的后序遍历序列
+
+```java
+//输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回  true，否则返回  false。假设输入的数组的任意两个数字都互不相同。
+// 关键点： 左 < 中 < 右
+class Solution {
+    public boolean verifyPostorder(int[] postorder) {
+        return dfs(postorder, 0, postorder.length - 1);
+    }
+
+    private boolean dfs(int[] postorder, int l, int r) {
+        if (l > r) return true;
+        int i = l;
+        while (postorder[i] < postorder[r]) {
+            i++;
+        } 
+        for (int j = i; j <= r - 1; j ++ ) {
+            if (postorder[j] < postorder[r]) {
+                return false;
+            }
+        }
+        return dfs(postorder, l, i - 1) && dfs(postorder, i, r - 1);
+    }
+}
+```
+
+ 
+
+## 34 二叉树中和为某一值得路径 （路径总和II）
+
+```java
+输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。
+
+class Solution {
+    List<List<Integer>> res;
+    LinkedList<Integer> path;
+    public List<List<Integer>> pathSum(TreeNode root, int target) {
+        res = new ArrayList<>();
+        path = new LinkedList<>();
+        if (root == null) return res;
+        path.add(root.val);
+        dfs(root, target - root.val);
+        return res;
+    }
+    private void dfs(TreeNode root, int sum) {
+        if (root == null) return;
+        if (root.left == null && root.right == null && sum == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        if (root.left != null) {
+            path.add(root.left.val);
+            sum -= root.left.val;
+            dfs(root.left, sum);
+            sum += root.left.val;
+            path.removeLast();
+        }
+        if (root.right != null) {
+            path.add(root.right.val);
+            sum -= root.right.val;
+            dfs(root.right, sum);
+            sum += root.right.val;
+            path.removeLast();
+        }
+    }
+}
+```
+
+
+
+## 34 路径总和I
+
+```java
+给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false 。
+
+叶子节点 是指没有子节点的节点。
+
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) return false;
+        return dfs(root, targetSum - root.val);    
+    }
+    private boolean dfs(TreeNode root, int sum) {
+        if (root.left == null && root.right == null && sum == 0) return true; 
+        if (root.left != null) {
+            sum -= root.left.val;
+            if (dfs(root.left, sum) == true) {
+                return true;
+            }
+            sum += root.left.val;
+        }
+        if (root.right != null) {
+            sum -= root.right.val;
+            if (dfs(root.right, sum) == true) {
+                return true;
+            }
+            sum += root.right.val;
+        }
+        return false;
+    }
+}
+```
+
+
+
+## 35 复杂链表的复制
+
+```java
+请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
+
+// hash法构建新链表
+class Solution {
+    public Node copyRandomList(Node head) {
+        Map<Node, Node> mp = new HashMap<>();
+        for (Node p = head; p != null; p = p.next ) {
+            mp.put(p, new Node(p.val));
+        }
+        for (Node p = head; p != null; p = p.next ) {
+            mp.get(p).next = mp.get(p.next);
+            mp.get(p).random = mp.get(p.random);
+        }
+        return mp.get(head);
+    }
+}
+```
+
+
+
+## 36 二叉搜索树与双向链表
+
+```java
+/* 双向链表：pre.right = cur、cur.left = pre、pre = cur
+
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+
+    public Node() {}
+
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val,Node _left,Node _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+class Solution {
+    private Node pre;
+    private Node head;
+    public Node treeToDoublyList(Node root) {
+        if (root == null) return root;
+        dfs(root);
+        head.left = pre;
+        pre.right = head;
+        return head;
+    }
+    private void dfs(Node cur) {
+        if (cur == null) return;
+        dfs(cur.left);
+        if (pre == null) {
+            head = cur;
+        } else {
+            pre.right = cur;
+        }
+        cur.left = pre;
+        pre = cur;
+        dfs(cur.right);
+    }
+}
+```
+
+
+
 # Carl习题集
 
