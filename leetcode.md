@@ -1356,5 +1356,143 @@ class Solution {
 
 
 
+## 37 序列化二叉树
+
+```java
+你可以将以下二叉树：
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+序列化为 "[1,2,3,null,null,4,5]"
+    
+
+public class Codec {
+    public String serialize(TreeNode root) {
+        if (root == null) return "[]";
+
+        StringBuilder str = new StringBuilder("[");
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = queue.poll();
+                if (node != null) {
+                    str.append(node.val);
+                    queue.offer(node.left);
+                    queue.offer(node.right);
+                } else {
+                    str.append("null");
+                }
+                str.append(",");
+            }
+        }
+        return str.deleteCharAt(str.length() - 1).append("]").toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if (data == null || data == "[]") return null;
+
+        String[] nodes = data.substring(1, data.length() - 1).split(",");
+        TreeNode root = new TreeNode(Integer.parseInt(nodes[0]));
+        int idx = 1;
+        Queue<TreeNode> queue = new LinkedList();
+        queue.offer(root);
+        while (!queue.isEmpty() && idx < nodes.length) {
+            int n = queue.size();
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = queue.poll();
+                if (!"null".equals(nodes[idx])) {
+                    node.left = new TreeNode(Integer.parseInt(nodes[idx]));
+                    queue.offer(node.left);
+                }
+                idx++;
+                if (!"null".equals(nodes[idx])) {
+                    node.right = new TreeNode(Integer.parseInt(nodes[idx]));
+                    queue.offer(node.right);
+                }
+                idx++;
+            }
+        }
+        return root;
+    }
+}
+```
+
+
+
+## 字符串的排列
+
+```java
+// 输入一个字符串，打印出该字符串中字符的所有排列。
+// 你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+
+/*
+输入：s = "abc"
+输出：["abc","acb","bac","bca","cab","cba"]
+*/
+
+class Solution {
+    private StringBuilder str;
+    private List<String> res;
+    private boolean[] used;
+    public String[] permutation(String ss) {
+        // 1、排序 2、去重 3、从0开始(不是组合，是排列)
+        char[] s = ss.toCharArray();
+        used = new boolean[s.length];
+        str = new StringBuilder();
+        res = new ArrayList<>();
+        // 方式一: sort + used判断 去重
+        // Arrays.sort(s);
+        // backtracking(s, 0);
+        // 方式二: set 去重
+        backtracking2(s, 0);
+        return res.toArray(new String[res.size()]);
+    }
+    // private void backtracking(char[] s, int idx) {
+    //     if (idx == s.length) {
+    //         res.add(str.toString());
+    //         return;
+    //     }
+    //     for (int i = 0; i < s.length; i ++ ) {
+    //         if (used[i] == true || (i > 0 && s[i] == s[i - 1] && used[i - 1] == false)) continue;
+    //         used[i] = true;
+    //         str.append(s[i]);
+    //         backtracking(s, idx + 1);
+    //         str.deleteCharAt(str.length() - 1);
+    //         used[i] = false;
+    //     }
+    // }
+
+    private void backtracking2(char[] s, int idx) {
+        if (idx == s.length) {
+            // res.add(new String(s));
+            res.add(String.valueOf(s));
+            return;
+        }
+        Set<Character> set = new HashSet<>(); 
+        for (int i = idx; i < s.length; i ++ ) {
+            if (set.contains(s[i])) continue;
+            set.add(s[i]);
+            swap(s, idx, i);
+            backtracking2(s, idx + 1);
+            swap(s, idx, i);
+        }
+    }
+    private void swap(char[] s, int i, int j) {
+        char t = s[i];
+        s[i] = s[j];
+        s[j] = t;
+    }
+}
+```
+
+
+
 # Carl习题集
 
