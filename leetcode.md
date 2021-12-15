@@ -1426,7 +1426,7 @@ public class Codec {
 
 
 
-## 字符串的排列
+## 38 字符串的排列
 
 ```java
 // 输入一个字符串，打印出该字符串中字符的所有排列。
@@ -1489,6 +1489,88 @@ class Solution {
         s[i] = s[j];
         s[j] = t;
     }
+}
+```
+
+
+
+## 39 数组中出现次数超过一半的数字
+
+```java
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+    
+class Solution {
+    public int majorityElement(int[] nums) {
+        int res = nums[0];
+        int cnt = 0;
+        for (int i = 0; i < nums.length; i ++ ) {
+            if (cnt == 0) {
+                res = nums[i];
+                cnt = 1;
+            } else {
+                if (res == nums[i]) cnt++;
+                else cnt--;
+            }
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 40 最小的k个数
+
+```java
+class Solution {
+    // 方式一： 优先队列，大顶堆
+    public int[] getLeastNumbers(int[] arr, int k) {
+        if (k == 0) return new int[0];
+        // PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> b - a);
+        PriorityQueue<Integer> queue = new PriorityQueue<>(Collections.reverseOrder());
+        for (int i = 0; i < arr.length; i ++ ) {
+            if (queue.size() < k) {
+                queue.offer(arr[i]);
+            } else {
+                if (queue.peek() > arr[i]) {
+                    queue.poll();
+                    queue.offer(arr[i]);
+                }
+            }
+        }
+        int[] res = new int[k];
+        for (int i = 0; i < k; i ++ ) {
+            res[i] = queue.poll();
+        }
+        return res;
+    }
+    
+    // 方式二：快速排序 + 二分（partition划分的是最终有序数组的下标i，左边是小于nums[i]的无序的数,右边是大于nums[i]的无序的数）
+    public int[] getLeastNumbers(int[] arr, int k) {
+        if (k == 0 || arr == null || arr.length == 0) return new int[0];        
+        return getKnum(arr, k, 0, arr.length - 1);
+    }
+
+    int[] getKnum(int[] arr, int k, int l, int r) {
+        int i = partition(arr, l, r);
+        if (i == k - 1) {
+            return Arrays.copyOf(arr, k);
+        }
+        return i > k - 1 ? getKnum(arr, k, l, i - 1) : getKnum(arr, k, i + 1, r);
+    }
+
+    private int partition(int[] arr, int l, int r) {
+        int x = arr[l];
+        while (l < r) {
+            while (l < r && arr[r] > x) r--;
+            arr[l] = arr[r];
+            while (l < r && arr[l] <= x) l++;
+            arr[r] = arr[l]; 
+        }
+        arr[l] = x;
+        return l;
+    } 
 }
 ```
 
