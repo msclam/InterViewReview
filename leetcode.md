@@ -522,6 +522,7 @@ class Solution {
 
 ```java
 // java
+// n & (n - 1) 会消除 n 中最后一位中的 1。
 public class Solution {
     // you need to treat n as an unsigned value
     public int hammingWeight(int n) {
@@ -1571,6 +1572,148 @@ class Solution {
         arr[l] = x;
         return l;
     } 
+}
+```
+
+
+
+## 41 数据流中的中位数
+
+```java
+//关键点： 中位数-> 较小数的部分用大顶堆，较大数的部分用小顶堆,去中间数（两数的平均）
+如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+/*
+创建大根堆、小根堆，其中：大根堆存放较小的一半元素，小根堆存放较大的一半元素。
+添加元素时，若两堆元素个数相等，放入小根堆（使得小根堆个数多 1）；若不等，放入大根堆（使得大小根堆元素个数相等）
+取中位数时，若两堆元素个数相等，取两堆顶求平均值；若不等，取小根堆堆顶。
+
+注意： 大根堆多1也行，最后奇数返回大根堆的堆顶即可
+*/
+class MedianFinder {
+    PriorityQueue<Integer> maxHeap;
+    PriorityQueue<Integer> minHeap;
+    public MedianFinder() {
+        // maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        // maxHeap = new PriorityQueue<>((a, b) -> b - a);
+        maxHeap = new PriorityQueue(new Comparator<Integer>() {
+            public int compare(Integer a, Integer b) {
+                // return Integer.compare(b, a);
+                return b - a;
+            }
+        });
+        minHeap = new PriorityQueue<>();
+    }
+    
+    public void addNum(int num) {
+        if (maxHeap.size() == minHeap.size()) {
+            maxHeap.offer(num);
+            minHeap.offer(maxHeap.poll()); // 小顶堆加1,大顶堆+1后-1
+        } else {
+            minHeap.offer(num);
+            maxHeap.offer(minHeap.poll());
+        }
+    }
+    
+    public double findMedian() {
+        if (maxHeap.size() == minHeap.size()) {
+            return (maxHeap.peek() + minHeap.peek()) / 2.0;
+        } else {
+            return minHeap.peek();
+        }
+    }
+}
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder obj = new MedianFinder();
+ * obj.addNum(num);
+ * double param_2 = obj.findMedian();
+ */
+```
+
+
+
+## 42 连续子数组的最大和
+
+```java
+输入一个整型数组，数组里有正数也有负数。数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+    
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+        int[] f = new int[n];
+        int res = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i ++ ) {
+            f[i] = nums[i];
+            if (i > 0 && nums[i] + f[i - 1] > f[i]) {
+                f[i] = nums[i] + f[i - 1];
+            }
+            res = Math.max(res, f[i]);
+        }
+        return res;
+    }
+}
+```
+
+
+
+## 43 1~n整数中1出现的次数
+
+```java
+/*
+输入一个整数 n ，求 1 ～ n 这 n 个整数的十进制表示中 1 出现的次数。
+
+例如，输入 12，1 ～ 12 这些整数中包含 1 的数字有 1、10、11 和 12，1 一共出现了 5 次。
+*/
+/**
+789 hgih=7 low=89
+700~789 f(low)
+0~6 * 00~99  high * f(base - 1) 这里只统计low的1的个数
+hgih=1  -> 189  89+1    low + 1
+high!=1 -> 289  1 00~99  100 base
+*/
+public int countDigitOne(int n) {
+        if (n < 1) return 0;
+        String s = String.valueOf(n);
+        int base = (int) Math.pow(10, s.length() - 1);
+        int high = n / base;
+        int low = n % base;
+        if (high == 1) {
+            return countDigitOne(low) + countDigitOne(base - 1) + low + 1;
+        } else {
+            return countDigitOne(low) + high * countDigitOne(base - 1) + base;
+        }
+    }
+```
+
+
+
+## 55-i 二叉树的深度
+
+```java
+输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。
+    
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+       	// 方式一： 深搜
+        // return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+		
+        // 方式二: 层次遍历
+        int depth = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            depth++;
+            int n = queue.size();
+            for (int i = 0; i < n; i ++ ) {
+                TreeNode node = queue.poll();
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+        }
+        return depth;
+    }
 }
 ```
 
