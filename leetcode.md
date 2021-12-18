@@ -1688,6 +1688,61 @@ public int countDigitOne(int n) {
 
 
 
+## 45 把数组排成最小的数
+
+```java
+
+class Solution {
+    public String minNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < nums.length; i ++ ) {
+            strs[i] = String.valueOf(nums[i]);
+        }
+
+        // Arrays.sort(strs, (a, b) -> (a + b).compareTo(b + a)); // 3 _30 > 30_3 所以30放在3前面
+        // Arrays.sort(strs, new Comparator<String>() {
+        //     @Override
+        //     public int compare(String a, String b) {
+        //         return (a + b).compareTo(b + a);
+        //     }
+        // });
+        qsort(strs, 0, strs.length - 1);
+
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < strs.length; i ++ ) {
+            res.append(strs[i]);
+        }
+        return res.toString();
+    }
+
+    private void qsort(String[] strs, int l, int r) {
+        if (l >= r) return;
+
+        int i = l, j = r;
+        String x = strs[l + (r - l) / 2];
+        while (i < j) {
+            while ((strs[i] + x).compareTo(x + strs[i]) < 0) i++;
+            while ((strs[j] + x).compareTo(x + strs[j]) > 0) j--;
+            if (i <= j) {
+                swap(strs, i, j);
+                i++;
+                j--;
+            }
+        }
+        if (l < j) qsort(strs, l, j);
+        if (i < r) qsort(strs, i, r);
+    }
+
+    private void swap(String[] strs, int i, int j) {
+        String tmp = strs[i];
+        strs[i] = strs[j];
+        strs[j] = tmp;
+    }
+}
+```
+
+
+
 ## 55-i 二叉树的深度
 
 ```java
@@ -1716,6 +1771,105 @@ class Solution {
     }
 }
 ```
+
+
+
+## 57 和为s的两个数字
+
+```java
+// 输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对数字的和等于s，则输出任意一对即可。
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        if (nums == null || nums.length == 0) return new int[0];
+        int i = 0;
+        int j = nums.length - 1;
+        while (i < j) {
+            if (nums[i] + nums[j] == target) {
+                return new int[] {nums[i], nums[j]};
+            } else if (nums[i] + nums[j] > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return new int[0];
+    }
+}
+```
+
+
+
+## 58-ii 左旋转字符串
+
+```java
+//字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字 2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+class Solution {
+    public String reverseLeftWords(String s, int k) {
+        // 方式一：直接字符拼接
+        // return s.substring(k, s.length()) + s.substring(0, k);
+
+        // 方式二：
+        // char[] chars = s.toCharArray();
+        // StringBuilder str = new StringBuilder();
+        // for (int i = k; i < k + chars.length; i ++ ) {
+        //     str.append(chars[i % chars.length]);
+        // }
+
+        // return str.toString();
+
+        // 方式三
+        char[] chars = s.toCharArray();
+        
+        reverse(chars, 0, k - 1);
+        reverse(chars, k, chars.length - 1);
+        reverse(chars, 0, chars.length - 1);
+
+        return String.valueOf(chars);
+    }
+
+    private void reverse(char[] chars, int l, int r) {
+        // for (int i = 0; i < (r - l + 1) / 2; i ++ ) {
+        //     char t = chars[l + i];
+        //     chars[l + i] = chars[r - i];
+        //     chars[r - i] = t;
+        // } 
+
+        for (int i = l, j = r; i < j; i++, j-- ) {
+            char t = chars[i];
+            chars[i] = chars[j];
+            chars[j] = t;
+        }
+    }
+}
+```
+
+ 
+
+
+
+## 63 股票的最大利润
+
+```java
+// 假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null | prices.length == 0) return 0;
+        // 注意是买卖一次
+        int res = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i ++ ) {
+            min = Math.min(min, prices[i]);
+            res = Math.max(res, prices[i] - min);
+        }
+        return res;
+    }
+}
+```
+
+
 
 
 
