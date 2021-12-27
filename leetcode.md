@@ -1941,3 +1941,9 @@ class Solution {
 
 # Carl习题集
 
+## 背包问题总结
+
+![](.\pic\leetcode\背包问题递推公式.png)
+
+![](.\pic\leetcode\背包问题遍历顺序.png)
+
