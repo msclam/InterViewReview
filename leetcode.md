@@ -2898,7 +2898,7 @@ int main() {
 ## 股票问题
 
 ```java
-（一）买卖股票最佳时机 121
+（一）买卖股票最佳时机 121   k = 1
 /*
 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
 （单次买卖）低价购入，高价卖出
@@ -2908,14 +2908,18 @@ public int maxProfit(int[] prices) {
     int res = 0; 
     int min = Integer.MAX_VALUE;
     for (int i = 0; i < prices.length; i ++ ) {
-        min = Math.min(min, prices[i]);
-        res = Math.max(res, prices[i] - min);
+        //min = Math.min(min, prices[i]);
+        //res = Math.max(res, prices[i] - min);
+    	if (prices[i] < min) {
+            min = prices[i];
+        } else if (prices[i] - min > res) {
+            res = prices[i] - min;
+        }
     }
-
     return res;
 }   
 
-(二）买卖股票的最佳时机 II 122
+(二）买卖股票的最佳时机 II 122  k = ∞
 /*
 设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
@@ -2932,25 +2936,235 @@ public int maxProfit(int[] prices) {
     return res;
 }
  
-(三）买卖股票的最佳时机 III 123
+(三）买卖股票的最佳时机 III 123   k = 2
 /*
-
+给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。
+设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。
+注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 */
+public int maxProfit(int[] prices) {
+    if (prices == null || prices.length == 0) return 0;
+
+    int len = prices.length;
+    int[][] f = new int[len + 1][5 + 1];
+
+    f[0][1] = 0;
+    f[0][2] = f[0][3] = f[0][4] = f[0][5] = Integer.MIN_VALUE;
+
+    for (int i = 1; i <= len; i ++ ) {
+        for (int j = 1; j <= 5; j += 2) {
+            f[i][j] = f[i - 1][j];
+            if (i > 1 && j > 1 && f[i - 1][j - 1] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);
+            } 
+        }
+        for (int j = 2; j <= 5; j += 2) {
+            f[i][j] = f[i - 1][j - 1];
+            if (i > 1 && f[i - 1][j] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j] + prices[i - 1] - prices[i - 2]);
+            }
+            if (i > 1 && j > 2 && f[i - 1][j - 2] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j - 2] + prices[i - 1] - prices[i - 2]);
+            }
+        }
+    }
+
+    return Math.max(Math.max(f[len][1], f[len][3]), f[len][5]);
+} 
  
-(四）买卖股票的最佳时机 IV 188 
+(四）买卖股票的最佳时机 IV 188    k = x
 /*
-
+给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。
+设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。
+注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
 */
+public int maxProfit(int k, int[] prices) {
+    if (prices == null || prices.length == 0) return 0;
+
+    if (k > prices.length / 2) {
+        int res = 0;
+        for (int i = 0; i < prices.length; i ++ ) {
+            if (i > 0 && prices[i] - prices[i - 1] > 0) {
+                res += prices[i] - prices[i - 1];
+            }
+        }
+        return res;
+    }
+    int len = prices.length;
+    int[][] f = new int[len + 1][2 * k + 1 + 1];
+
+    f[0][1] = 0;
+    for (int i = 2; i <= 2 * k + 1; i ++ ) {
+        f[0][i] = Integer.MIN_VALUE;
+    }
+
+    for (int i = 1; i <= len; i ++ ) {
+        for (int j = 1; j <= 2 * k + 1; j += 2 ) {
+            f[i][j] = f[i - 1][j];
+            if (i > 1 && j > 1 && f[i - 1][j - 1] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);
+            }
+        }
+
+        for (int j = 2; j <= 2 * k + 1; j += 2 ) {
+            f[i][j] = f[i - 1][j - 1];
+            if (i > 1 && f[i - 1][j] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j] + prices[i - 1] - prices[i - 2]);
+            }
+            if (i > 1 && j > 2 && f[i - 1][j - 2] != Integer.MIN_VALUE) {
+                f[i][j] = Math.max(f[i][j], f[i - 1][j - 2] + prices[i - 1] - prices[i - 2]);
+            }
+        }
+    } 
+
+    int res = 0;
+    for (int i = 1; i<= 2 * k + 1; i += 2) {
+        res = Math.max(res, f[len][i]);
+    }
+    return res;
+}
  
 (五）最佳买卖股票时机含冷冻期 309
 /*
 
 */
  
-(六）买卖股票的最佳时机含手续费 714
+(六）买卖股票的最佳时机含手续费 714  k = ∞
 /*
-
+给定一个整数数组 prices，其中第 i 个元素代表了第 i 天的股票价格 ；整数 fee 代表了交易股票的手续费用。
+你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，在卖出它之前你就不能再继续购买股票了。
+返回获得利润的最大值。
+注意：这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。
 */
- 
+public int maxProfit(int[] prices, int fee) {
+    if (prices == null || prices.length == 0) return 0;
+
+    int res = 0;
+    int min = Integer.MAX_VALUE;
+    for (int i = 0; i < prices.length; i ++ ) {
+        if (prices[i] < min) {
+            min = prices[i];
+        } else if (prices[i] - min - fee > 0) {
+            res += prices[i] - min - fee;
+            min = prices[i] - fee; // 注意这点
+        } 
+    }
+    return res;
+} 
+```
+
+## 回文串系列
+
+```java
+409. 最长回文串 (构造最长的回文串长度)
+给定一个包含大写字母和小写字母的字符串，找到通过这些字母构造成的最长的回文串。
+在构造过程中，请注意区分大小写。比如 "Aa" 不能当做一个回文字符串。
+    
+输入:
+"abccccdd"
+输出:
+7
+解释:
+我们可以构造的最长的回文串是"dccaccd", 它的长度是 7。
+
+public int longestPalindrome(String s) {
+    char[] str = s.toCharArray();
+    int[] mp = new int[128];
+
+    for (int i = 0; i < str.length; i ++ ) {
+        mp[str[i]]++;
+    }
+
+    int res = 0;
+    for (int cnt : mp) {
+        res += cnt / 2 * 2;
+        if (cnt % 2 == 1 && res % 2 == 0) {
+            res++;
+        }
+    }
+    return res;
+}
+
+5. 最长回文子串（回文子串）
+给你一个字符串 s，找到 s 中最长的回文子串。
+
+public String longestPalindrome(String ss) {
+    char[] s = ss.toCharArray();
+    int n = s.length;
+    int x = 0;
+    int y = 0;
+    int len = 1;
+    for (int mid = 0; mid < n; mid ++ ) {
+        int i = mid;
+        int j = mid;
+        while (i >= 0 && j < n && s[i] == s[j]) {
+            if (j - i + 1 > len) {
+                len = j - i + 1;
+                x = i;
+                y = j;
+            }
+            i--;
+            j++;
+        }
+        i = mid - 1;
+        j = mid;
+        while (i >= 0 && j < n && s[i] == s[j]) {
+            if (j - i + 1 > len) {
+                len = j - i + 1;
+                x = i;
+                y = j;
+            }
+            i--;
+            j++;
+        }
+    }
+    return ss.substring(x, y + 1);
+}
+
+647. 回文子串（求回文串数目）
+给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+回文字符串 是正着读和倒过来读一样的字符串。
+子字符串 是字符串中的由连续字符组成的一个序列。
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+
+public int countSubstrings(String s) {
+    // 方式一
+    // int res = 0;
+    // char[] str = s.toCharArray();
+    // for (int mid = 0; mid < str.length; mid ++ ) {
+    //     int i = mid;
+    //     int j = mid;
+    //     while (i >= 0 && j < str.length && str[i] == str[j]) {
+    //         i--;
+    //         j++;
+    //         res++;
+    //     }
+    //     i = mid - 1;
+    //     j = mid;
+    //     while (i >= 0 && j < str.length && str[i] == str[j]) {
+    //         i--;
+    //         j++;
+    //         res++;
+    //     }
+    // }
+    // return res;
+
+    // 方式二
+    char[] str = s.toCharArray();
+    boolean[][] f = new boolean[str.length][str.length];
+    for (boolean[] b : f) {
+        Arrays.fill(b, false);
+    }
+    int res = 0;
+    for (int j = 0; j < str.length; j ++ ) {
+        for (int i = 0; i <= j; i ++ ) {
+            if (str[i] == str[j] && (j - i <= 1 || f[i + 1][j - 1] == true)) {
+                f[i][j] = true;
+                res++;
+            }
+        }
+    }
+    return res;
+}
 ```
 
