@@ -19,7 +19,7 @@ git commit -m '这里面是提交的注释'  //提交代码
 git push // 推送代码到gitee 或者github 
 git pull //从服务端gitee 或者 github拉取代码
 
-### 3、演示合作开发
+### 3、演示合作开发（冲突解决）
 
 修改自己的代码之前先git pull获取今天更新的代码
 
@@ -30,6 +30,8 @@ git pull //从服务端gitee 或者 github拉取代码
 ![image-20220107161045154](C:\Users\tesseract\AppData\Roaming\Typora\typora-user-images\image-20220107161045154.png)
 
 ![image-20220107161000193](C:\Users\tesseract\AppData\Roaming\Typora\typora-user-images\image-20220107161000193.png)
+
+![](F:\project\面试总结\InterViewReview\pic\github-note\修改冲突文件.png)
 
 ### 4、个人新建仓库并往上面推代码
 
@@ -46,11 +48,29 @@ git push -u origin master
 git remote add github https://github.com/xiaoweix/myCode.git
 git remote -v // 查看自己有哪些远程仓库
 
-### 6、误删 回退到上一个版本
+上传多个不同的远程仓库
 
+git push github master
+
+![](F:\project\面试总结\InterViewReview\pic\github-note\同一文件夹上传多端远程仓库.png)
+
+### 6、误删 回退到上一个版本
 
 git reset --hard HEAD^
 git reset --hard commit号 //回退到指定commit版本 使用 git log 查看commit号
 
+git log 查看提交的日志
+
 ### 7、分支
 git checkout test //切换分支
+
+在分支上push完之后，想要在master融合
+
+git checkout master
+
+git merge test
+
+git push
+
+![](F:\project\面试总结\InterViewReview\pic\github-note\一般公司开发使用git流程.png)
+
