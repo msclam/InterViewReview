@@ -1871,6 +1871,91 @@ class Solution {
 
 
 
+## 65 不用加减乘除做加法
+
+```java
+写一个函数，求两个整数之和，要求在函数体内不得使用 “+”、“-”、“*”、“/” 四则运算符号。
+    
+public int add(int a, int b) {
+    // (a ^ b) ^ ((a & b) << 1)
+    while (b != 0) {
+        int sum = a ^ b;
+        b = (a & b) << 1;
+        a = sum;
+    }
+    return a;
+}
+```
+
+
+
+## 66 构建乘积数组
+
+```java
+给定一个数组 A[0,1,…,n-1]，请构建一个数组 B[0,1,…,n-1]，其中 B 中的元素 B[i]=A[0]×A[1]×…×A[i-1]×A[i+1]×…×A[n-1]。不能使用除法。
+    
+public int[] constructArr(int[] a) {
+    int n = a.length;
+    int[] res = new int[n];
+    for (int i = 0, left = 1; i < n; i ++ ) {
+        res[i] = left;
+        left *= a[i];
+    }
+    for (int i = n - 1, right = 1; i >= 0; i -- ) {
+        res[i] *= right;
+        right *= a[i];
+    }
+    return res;
+}
+```
+
+
+
+## 67 把字符串转换成整数
+
+```java
+写一个函数 StrToInt，实现把字符串转换成整数这个功能。不能使用 atoi 或者其他类似的库函数。
+假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。如果数值超过这个范围，请返回  INT_MAX (231 − 1) 或 INT_MIN (−231) 。
+在任何情况下，若函数不能进行有效的转换时，请返回 0。
+    
+public int strToInt(String str) {
+    char[] s = str.toCharArray();
+    int i = 0;
+    while (i < s.length && s[i] == ' ') i++;
+    if (i == s.length) return 0;
+
+    int sign = 1;
+    if (s[i] == '-') {
+        sign = -1;
+        i++;
+    } else if (s[i] == '+'){
+        i++;
+    }
+
+    int res = 0;
+    int idx = 0;
+    for (; i < s.length; i ++ ) {
+        idx++;
+        int num = s[i] - '0';
+        if ((num < 0 || num > 9) && idx == 1) {
+            return 0;
+        }
+        if ((num < 0 || num > 9) && idx > 1) {
+            break;
+        }
+        if (res > (Integer.MAX_VALUE - num) / 10) {
+            return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        }
+        res = res * 10 + num;
+    }
+    return sign * res;
+}
+```
+
+
+
+
+
 ## 68-i 二叉搜索树的最近公共祖先
 
 ```java
@@ -1909,6 +1994,8 @@ class Solution {
     }
 }
 ```
+
+
 
 
 
