@@ -1686,6 +1686,8 @@ public int countDigitOne(int n) {
     }
 ```
 
+## 44 (未做)数字序列中某一位的数字
+
 
 
 ## 45 把数组排成最小的数
@@ -1842,10 +1844,83 @@ class Solution {
             chars[j] = t;
         }
     }
+} 
+```
+
+## 60 n个骰子的点数
+
+```java
+```
+
+
+
+## 61 扑克牌中的顺子
+
+```java
+//从若干副扑克牌中随机抽 5 张牌，判断是不是一个顺子，即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，可以看成任意数字。A 不能视为 14。
+
+public boolean isStraight(int[] nums) {
+    if (nums == null || nums.length == 0) return false;
+
+    Arrays.sort(nums);
+
+    int joker = 0;
+    for (int i = 0; i < 4; i ++ ) {
+        if (nums[i] == 0) {
+            joker++;
+        } else if (nums[i] == nums[i + 1]) {
+            return false;
+        }
+    }
+
+    return nums[4] - nums[joker] <= 4;
 }
 ```
 
- 
+
+
+## 62 圆圈中最后剩下的数字
+
+```java
+// 0,1,,n-1 这 n 个数字排成一个圆圈，从数字 0 开始，每次从这个圆圈里删除第 m 个数字。求出这个圆圈里剩下的最后一个数字。
+
+//例如，0、1、2、3、4 这 5 个数字组成一个圆圈，从数字 0 开始每次删除第 3 个数字，则删除的前 4 个数字依次是 2、0、4、1，因此最后剩下的数字是 3。
+
+public int lastRemaining(int n, int m) {
+    // Queue<Integer> q = new LinkedList<>();
+    // for (int i = 0; i < n; i ++ ) {
+    //     q.offer(i);
+    // }
+    // int res = -1;
+    // while (q.size() > 1) {
+    //     for (int i = 0; i < m - 1; i ++ ) {
+    //         q.offer(q.poll());
+    //     }
+    //     q.poll();
+    // }
+    // return q.poll();
+
+    // // 方法二：
+    List<Integer> list = new ArrayList<>();
+    for (int i = 0; i < n; i ++ ) {
+        list.add(i);
+    }
+    int idx = 0;
+    while (list.size() > 1) {
+        idx = (idx + m - 1) % list.size();
+        list.remove(idx);
+    }
+    return list.get(0);
+
+    // // 方法三：
+    // // int res = 0;
+    // // for (int i = 2; i <= n; i ++ ) {
+    // //     res = (res + m) % i;
+    // // }
+
+    // // return res;
+}
+```
 
 
 
