@@ -1776,7 +1776,7 @@ class Solution {
 
 
 
-## 57 和为s的两个数字
+## 57-i  和为s的两个数字
 
 ```java
 // 输入一个递增排序的数组和一个数字s，在数组中查找两个数，使得它们的和正好是s。如果有多对数字的和等于s，则输出任意一对即可。
@@ -1797,6 +1797,64 @@ class Solution {
         }
         return new int[0];
     }
+}
+```
+
+
+
+## 57-ii 和为s的连续正数序列
+
+```java
+输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。
+序列内的数字由小到大排列，不同序列按照首个数字从小到大排列
+
+public int[][] findContinuousSequence(int target) {
+    List<int[]> list = new ArrayList<>();
+    int l = 1, r = 2;
+    while (l < r) {
+        int sum = (l + r) * (r - l + 1) / 2;
+        if (sum < target) {
+            r++;
+        } else if (sum > target) {
+            l++;
+        } else if (sum == target) {
+            int[] res = new int[r - l + 1];
+            for (int i = l; i <= r; i ++ ) {
+                res[i - l] = i;
+            }
+            list.add(res);
+            l++;
+        }
+    }
+    return list.toArray(new int[list.size()][]);
+}
+```
+
+
+
+## 58-i 翻转单词顺序
+
+```java
+/*
+输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student. "，则输出"student. a am I"。
+
+输入: "  hello world!  "
+输出: "world! hello"
+*/
+public String reverseWords(String s) {
+    String[] strs = s.split("\\s+"); // 多个或一个空格作为分割
+    int len = strs.length;
+    StringBuilder str = new StringBuilder();
+    for (int i = len - 1; i >= 0; i -- ) {
+        if (!"".equals(strs[i])) { 
+            str.append(strs[i]).append(" ");
+        }
+    }
+
+    s = str.toString();
+    len = s.length();
+
+    return len > 0 ? s.substring(0, len - 1) : "";
 }
 ```
 
@@ -1847,9 +1905,115 @@ class Solution {
 } 
 ```
 
+
+
+## 59-i 滑动窗口的最大值
+
+```java
+//给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+
+public int[] maxSlidingWindow(int[] nums, int k) {
+    if (nums == null || nums.length == 0) return new int[0];
+
+    int idx = 0;
+    int n = nums.length;
+    int[] res = new int[n - k + 1];
+
+    Deque<Integer> queue = new LinkedList<>();
+
+    for (int i = 0; i < n; i ++ ) {
+        while (!queue.isEmpty() && i - queue.peekFirst() + 1 > k) {
+            queue.pollFirst();
+        }
+        while (!queue.isEmpty() && nums[i] > nums[queue.peekLast()]) {
+            queue.pollLast();
+        }
+        queue.offer(i);
+        if (i >= k - 1) {
+            res[idx++] = nums[queue.peekFirst()];
+        }
+    }
+    return res;
+}
+```
+
+
+
+## 59-ii 队列的最大值
+
+```java
+请定义一个队列并实现函数 max_value 得到队列里的最大值，要求函数max_value、push_back 和 pop_front 的均摊时间复杂度都是O(1)。
+
+若队列为空，pop_front 和 max_value 需要返回 -1
+
+class MaxQueue {
+    private Deque<Integer> dataQueue;
+    private Deque<Integer> maxQueue;
+    public MaxQueue() {
+        dataQueue = new LinkedList<>();
+        maxQueue = new LinkedList<>();
+    }
+    
+    public int max_value() {
+        return maxQueue.isEmpty() ? -1 : maxQueue.peekFirst();
+    }
+    
+    public void push_back(int value) {
+        while (!maxQueue.isEmpty() && maxQueue.peekLast() < value) {
+            maxQueue.pollLast();
+        }
+        dataQueue.offer(value);
+        maxQueue.offer(value);
+    }
+    
+    public int pop_front() {
+        if (dataQueue.isEmpty()) return -1;
+        int res = dataQueue.pollFirst();
+        if (res == maxQueue.peekFirst()) maxQueue.pollFirst();
+        return res; 
+    }
+}
+
+/**
+ * Your MaxQueue object will be instantiated and called as such:
+ * MaxQueue obj = new MaxQueue();
+ * int param_1 = obj.max_value();
+ * obj.push_back(value);
+ * int param_3 = obj.pop_front();
+ */
+```
+
+
+
 ## 60 n个骰子的点数
 
 ```java
+//把n个骰子扔在地上，所有骰子朝上一面的点数之和为s。输入n，打印出s的所有可能的值出现的概率。
+//你需要用一个浮点数数组返回答案，其中第 i 个元素代表这 n 个骰子所能掷出的点数集合中第 i 小的那个的概率。
+
+public double[] dicesProbability(int n) {
+    int[][] f = new int[n + 1][6 * n + 1];
+
+    for (int j = 1; j <= 6; j ++ ) {
+        f[1][j] = 1;
+    }
+
+    for (int i = 2; i <= n; i ++ ) {
+        for (int j = i; j <= 6 * i; j ++ ) {
+            for (int k = 1; k <= 6 && j > k; k ++ ) {
+                f[i][j] += f[i - 1][j - k];
+            }
+        }
+    }
+
+    double[] res = new double[5 * n + 1];
+    double all = Math.pow(6, n);
+    for (int i = 0; i < 5 * n + 1; i ++ ) {
+        res[i] = f[n][n + i] * 1.0 / all;
+    }
+
+    return res;
+}
 ```
 
 
