@@ -1745,6 +1745,32 @@ class Solution {
 
 
 
+## 54 二叉搜索树的第k大节点
+
+```java
+	// 给定一棵二叉搜索树，请找出其中第 k 大的节点。
+	private int res;
+    private int cur;
+    public int kthLargest(TreeNode root, int k) {
+        cur = k;
+        res = 0;
+        inorder(root);
+        return res;
+    }
+    private void inorder(TreeNode root) {
+        if (root == null) return;
+        inorder(root.right);
+        cur--;
+        if (cur == 0) {
+            res = root.val;
+            return;
+        }
+        inorder(root.left);
+    }
+```
+
+
+
 ## 55-i 二叉树的深度
 
 ```java
