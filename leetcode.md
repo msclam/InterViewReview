@@ -1776,6 +1776,82 @@ class Solution {
 
 
 
+## 55-ii 平衡二叉树
+
+```java
+// 输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过 1，那么它就是一棵平衡二叉树。
+
+public boolean isBalanced(TreeNode root) {
+    if (root == null) return true;
+    return isBalanced(root.left) && isBalanced(root.right) && 
+        Math.abs(depth(root.left) - depth(root.right)) <= 1;
+}   
+private int depth(TreeNode root) {
+    if (root == null) return 0;
+    return Math.max(depth(root.left), depth(root.right)) + 1;
+}
+```
+
+
+
+## 56-i 数组中数字出现的次数
+
+```java
+//一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是O(n)，空间复杂度是O(1)。
+
+public int[] singleNumbers(int[] nums) {
+    int res = 0;
+    for (int num : nums) {
+        res ^= num;
+    }
+    int flag = 1;
+    while ((flag & res) == 0) {
+        flag <<= 1;
+    }
+    int a = 0;
+    int b = 0;
+    for (int num : nums) {
+        if ((num & flag) == 0) a ^= num;
+        else b ^= num;
+    }
+    return new int[]{a, b};
+}
+```
+
+
+
+## 56-ii 数组中数字出现的次数 ii
+
+```java
+// 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+
+public int singleNumber(int[] nums) {
+    // Map<Integer, Integer> mp = new HashMap<>();
+    // for (int i = 0; i < nums.length; i ++ ) {
+    //     mp.put(nums[i], mp.getOrDefault(nums[i], 0) + 1);
+    // }
+    // for (Map.Entry<Integer, Integer> enrty : mp.entrySet()) {
+    //     if (enrty.getValue() == 1) return enrty.getKey();
+    // }
+    // return -1;
+
+    /*
+        0 ^ x = x
+        x ^ x = 0
+        x & ~x = 0
+        x & ~0 =x
+         */
+    int a = 0, b = 0;
+    for (int num: nums) {
+        a = (a ^ num) & ~b;
+        b = (b ^ num) & ~a;
+    }
+    return a;
+}
+```
+
+
+
 ## 57-i  和为s的两个数字
 
 ```java
