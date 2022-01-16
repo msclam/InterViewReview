@@ -48,8 +48,6 @@ class Solution {
         return -1;
 ```
 
-
-
 ## 04 二维数组中的查找
 
 ```java
@@ -77,8 +75,6 @@ public boolean findNumberIn2DArray(int[][] matrix, int target) {
     }
 ```
 
-
-
 ## 05 替换空格
 
 ```java
@@ -97,8 +93,6 @@ public String replaceSpace(String ss) {
         return str.toString();
     }
 ```
-
-
 
 ## 06 从尾到头打印链表
 
@@ -145,8 +139,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 07 重建二叉树
 
@@ -218,8 +210,6 @@ class Solution {
 }
 ```
 
-
-
 ## 09 用两个栈实现队列
 
 ```java
@@ -253,8 +243,6 @@ class CQueue {
     }
 }
 ```
-
-
 
 ## 10-I  斐波那契数列
 
@@ -290,8 +278,6 @@ class Solution {
 }
 ```
 
-
-
 ## 10-II 青蛙跳台阶问题
 
 ```java
@@ -325,8 +311,6 @@ class Solution {
 }
 ```
 
-
-
 ## 11 旋转数组的最小数字
 
 ```java
@@ -349,8 +333,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 12 矩阵中的路径
 
@@ -404,8 +386,6 @@ class Solution {
 }
 ```
 
-
-
 ## 13 机器人的运动范围
 
 ```java
@@ -453,8 +433,6 @@ class Solution {
 }
 ```
 
-
-
 ## 14-I 剪绳子
 
 ```java
@@ -492,8 +470,6 @@ class Solution {
 }
 ```
 
-
-
 ## 14-ii 剪绳子
 
 ```java
@@ -515,8 +491,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 15 二进制中1的个数
 
@@ -550,8 +524,6 @@ public:
 };
 ```
 
-
-
 ## 16 数值的整数次方
 
 ```java
@@ -575,8 +547,6 @@ class Solution {
 }
 ```
 
- 
-
 ## 17 打印从1到最大的n位数
 
 ```java
@@ -593,8 +563,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 18 删除链表的节点
 
@@ -633,8 +601,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 19 正则表达式匹配
 
@@ -691,8 +657,6 @@ class Solution {
 }
 ```
 
-
-
 ## 20 表示数值的字符串
 
 ```java
@@ -738,8 +702,6 @@ class Solution {
 }
 ```
 
-
-
 ## 21 调整数组顺序使奇数位于偶数前面
 
 ```java
@@ -778,8 +740,6 @@ public int[] exchange(int[] nums) {
     }
 ```
 
-
-
 ## 22 链表中倒数第k个节点
 
 ```java
@@ -810,8 +770,6 @@ class Solution {
 }
 ```
 
-
-
 ## 24 翻转链表
 
 ```java
@@ -837,8 +795,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 25 合并两个排序的链表
 
@@ -866,8 +822,6 @@ class Solution {
     }
 ```
 
-
-
 ## 26 树的子结构
 
 ```java
@@ -888,8 +842,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 27 二叉树的镜像
 
@@ -912,8 +864,6 @@ class Solution {
 }
 ```
 
-
-
 ## 28 对称的二叉树
 
 ```java
@@ -933,8 +883,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 29 顺时针打印矩阵
 
@@ -977,8 +925,6 @@ class Solution {
 }
 ```
 
-
-
 ## 30 包含min函数的栈
 
 ```java
@@ -1018,8 +964,6 @@ class MinStack {
 }
 ```
 
-
-
 ## 31 栈的压入、弹出序列
 
 ```java
@@ -1041,8 +985,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 32-i 从上到下打印二叉树
 
@@ -1082,8 +1024,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 32-ii 从上到下打印二叉树ii
 
@@ -1128,8 +1068,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 32-iii 从上到下打印二叉树
 
@@ -1176,8 +1114,6 @@ class Solution {
 } 
 ```
 
-
-
 ## 33 二叉搜索树的后序遍历序列
 
 ```java
@@ -1203,8 +1139,6 @@ class Solution {
     }
 }
 ```
-
- 
 
 ## 34 二叉树中和为某一值得路径 （路径总和II）
 
@@ -1246,8 +1180,6 @@ class Solution {
 }
 ```
 
-
-
 ## 34 路径总和I
 
 ```java
@@ -1281,8 +1213,6 @@ class Solution {
 }
 ```
 
-
-
 ## 35 复杂链表的复制
 
 ```java
@@ -1303,8 +1233,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 36 二叉搜索树与双向链表
 
@@ -1354,8 +1282,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 37 序列化二叉树
 
@@ -1425,8 +1351,6 @@ public class Codec {
 }
 ```
 
-
-
 ## 38 字符串的排列
 
 ```java
@@ -1493,8 +1417,6 @@ class Solution {
 }
 ```
 
-
-
 ## 39 数组中出现次数超过一半的数字
 
 ```java
@@ -1518,8 +1440,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 40 最小的k个数
 
@@ -1575,8 +1495,6 @@ class Solution {
 }
 ```
 
-
-
 ## 41 数据流中的中位数
 
 ```java
@@ -1631,8 +1549,6 @@ class MedianFinder {
  */
 ```
 
-
-
 ## 42 连续子数组的最大和
 
 ```java
@@ -1654,8 +1570,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 43 1~n整数中1出现的次数
 
@@ -1743,7 +1657,48 @@ class Solution {
 }
 ```
 
+## 53-i 在排序数组中查找数字I
 
+```java
+// 统计一个数字在排序数组中出现的次数。
+
+public int search(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return 0;
+    int n = nums.length;
+    int l = 0, r = n - 1;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (nums[mid] < target) l = mid + 1;
+        else r = mid;
+    }
+    if (nums[l] != target) return 0;
+    int tmp = l;
+    l = 0;
+    r = n - 1;
+    while (l < r) {
+        int mid = l + r + 1 >> 1;
+        if (nums[mid] > target) r = mid - 1;
+        else l = mid;
+    }
+    return r - tmp + 1;
+}
+```
+
+## 53-ii 0~n-1中缺失的数字
+
+```java
+// 一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0～n-1之内。在范围0～n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字。
+
+public int missingNumber(int[] nums) {
+    int res = 0;
+    int n = nums.length;
+    for (int i = 0; i < n; i ++ ) {
+        res ^= i ^ nums[i];
+    }
+    res ^= n;
+    return res;
+}
+```
 
 ## 54 二叉搜索树的第k大节点
 
@@ -1768,8 +1723,6 @@ class Solution {
         inorder(root.left);
     }
 ```
-
-
 
 ## 55-i 二叉树的深度
 
@@ -1800,8 +1753,6 @@ class Solution {
 }
 ```
 
-
-
 ## 55-ii 平衡二叉树
 
 ```java
@@ -1817,8 +1768,6 @@ private int depth(TreeNode root) {
     return Math.max(depth(root.left), depth(root.right)) + 1;
 }
 ```
-
-
 
 ## 56-i 数组中数字出现的次数
 
@@ -1843,8 +1792,6 @@ public int[] singleNumbers(int[] nums) {
     return new int[]{a, b};
 }
 ```
-
-
 
 ## 56-ii 数组中数字出现的次数 ii
 
@@ -1876,8 +1823,6 @@ public int singleNumber(int[] nums) {
 }
 ```
 
-
-
 ## 57-i  和为s的两个数字
 
 ```java
@@ -1901,8 +1846,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 57-ii 和为s的连续正数序列
 
@@ -1932,8 +1875,6 @@ public int[][] findContinuousSequence(int target) {
 }
 ```
 
-
-
 ## 58-i 翻转单词顺序
 
 ```java
@@ -1959,8 +1900,6 @@ public String reverseWords(String s) {
     return len > 0 ? s.substring(0, len - 1) : "";
 }
 ```
-
-
 
 ## 58-ii 左旋转字符串
 
@@ -2007,8 +1946,6 @@ class Solution {
 } 
 ```
 
-
-
 ## 59-i 滑动窗口的最大值
 
 ```java
@@ -2038,8 +1975,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
     return res;
 }
 ```
-
-
 
 ## 59-ii 队列的最大值
 
@@ -2085,8 +2020,6 @@ class MaxQueue {
  */
 ```
 
-
-
 ## 60 n个骰子的点数
 
 ```java
@@ -2118,8 +2051,6 @@ public double[] dicesProbability(int n) {
 }
 ```
 
-
-
 ## 61 扑克牌中的顺子
 
 ```java
@@ -2142,8 +2073,6 @@ public boolean isStraight(int[] nums) {
     return nums[4] - nums[joker] <= 4;
 }
 ```
-
-
 
 ## 62 圆圈中最后剩下的数字
 
@@ -2188,8 +2117,6 @@ public int lastRemaining(int n, int m) {
 }
 ```
 
-
-
 ## 63 股票的最大利润
 
 ```java
@@ -2210,8 +2137,6 @@ class Solution {
 }
 ```
 
-
-
 ## 64 求1+2+…+n
 
 ```java
@@ -2222,8 +2147,6 @@ public int sumNums(int n) {
     return n;
 }
 ```
-
-
 
 ## 65 不用加减乘除做加法
 
@@ -2245,8 +2168,6 @@ public int add(int a, int b) {
 }
 ```
 
-
-
 ## 66 构建乘积数组
 
 ```java
@@ -2266,8 +2187,6 @@ public int[] constructArr(int[] a) {
     return res;
 }
 ```
-
-
 
 ## 67 把字符串转换成整数
 
@@ -2310,10 +2229,6 @@ public int strToInt(String str) {
 }
 ```
 
-
-
-
-
 ## 68-i 二叉搜索树的最近公共祖先
 
 ```java
@@ -2353,10 +2268,6 @@ class Solution {
 }
 ```
 
-
-
-
-
 ## 68-ii 二叉树的最近公共祖先
 
 ```java
@@ -2381,8 +2292,6 @@ class Solution {
     }
 }
 ```
-
-
 
 # Carl习题集
 
