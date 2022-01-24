@@ -1616,12 +1616,14 @@ class Solution {
         }
 
         // Arrays.sort(strs, (a, b) -> (a + b).compareTo(b + a)); // 3 _30 > 30_3 所以30放在3前面
+        
         // Arrays.sort(strs, new Comparator<String>() {
         //     @Override
         //     public int compare(String a, String b) {
         //         return (a + b).compareTo(b + a);
         //     }
         // });
+        
         qsort(strs, 0, strs.length - 1);
 
         StringBuilder res = new StringBuilder();
@@ -1653,6 +1655,186 @@ class Solution {
         String tmp = strs[i];
         strs[i] = strs[j];
         strs[j] = tmp;
+    }
+}
+```
+
+## 46 把数字翻译成字符串
+
+```java
+public int translateNum(int num) {
+    String s = num + ""; // String.valueOf(num);
+    char[] str = s.toCharArray();
+    int[] f = new int[str.length + 1];  // 前i个字符翻译的方法数
+    f[0] = f[1] = 1;
+    for (int i = 2; i <= str.length; i ++ ) {
+        f[i] = f[i - 1];
+        if (str[i - 2] == '1' || (str[i - 2] == '2' && str[i - 1] < '6')) {
+            f[i] += f[i - 2];
+        }
+    }
+    return f[str.length];
+}
+```
+
+
+
+## 47 礼物的最大价值
+
+```java
+//在一个 m*n 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？ 
+
+public int maxValue(int[][] grid) {
+    if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+    int m = grid.length;
+    int n = grid[0].length;
+    int[][] f = new int[m][n];
+    for (int i = 0; i < m; i ++ ) {
+        for (int j = 0; j < n; j ++ ) {
+            if (i == 0 && j == 0) f[i][j] = grid[0][0];
+            // f[i][j] = Math.max(f[i  - 1][j], f[i][j - 1]) + nums[i][j];
+            if (i > 0) f[i][j] = Math.max(f[i][j], f[i - 1][j] + grid[i][j]);
+            if (j > 0) f[i][j] = Math.max(f[i][j], f[i][j - 1] + grid[i][j]);
+        }
+    }
+    return f[m - 1][n - 1];
+}
+```
+
+## 48 最长不含重复字符的子字符串
+
+```java
+// 请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+
+public int lengthOfLongestSubstring(String s) {
+    char[] str = s.toCharArray();
+    Map<Character, Integer> mp = new HashMap<>();
+    int i = 0;
+    int len = 0;
+    for (int j = 0; j < str.length; j ++ ) {
+        if (mp.containsKey(str[j])) {
+            i = Math.max(i, mp.get(str[j]) + 1);
+        }
+        mp.put(str[j], j);
+        len = Math.max(len, j - i + 1);
+    }
+    return len;
+}
+```
+
+## 49 丑数
+
+```java
+// 我们把只包含因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+使用动态规划
+public int nthUglyNumber(int n) {
+    int[] f = new int[n];
+    f[0] = 1;
+    int p2 = 0, p3 = 0, p5 = 0;
+    for (int i = 1; i < n; i ++ ) {
+        int next2 = f[p2] * 2;
+        int next3 = f[p3] * 3;
+        int next5 = f[p5] * 5;
+        f[i] = Math.min(Math.min(next2, next3), next5);
+        if (f[i] == next2) p2++;
+        if (f[i] == next3) p3++;
+        if (f[i] == next5) p5++;
+    }
+    return f[n - 1];
+}
+```
+
+## 50 第一个只出现一次的字符
+
+```java
+// 在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。
+
+public char firstUniqChar(String s) {
+     char[] chars = s.toCharArray();
+     if (chars.length == 0) return ' ';
+     int[] st = new int[26];
+     for (int i = 0; i < chars.length; i ++ ) {
+         st[chars[i] - 'a']++;
+     }
+
+     for (int i = 0; i < chars.length; i ++ ) {
+         if (st[chars[i] - 'a'] == 1) {
+             return chars[i];
+         }
+     }
+
+     return ' ';
+ }
+```
+
+## 51 数组中的逆序对
+
+```java
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+
+输入: [7,5,6,4]
+输出: 5
+
+class Solution {
+    // 方法: 归并排序，合并的时候，左边大于右边的数就开始统计cnt
+    private int cnt;
+    private static int[] tmp = new int[51000];
+    public int reversePairs(int[] nums) {
+        this.cnt = 0;
+        mergeSort(nums, 0, nums.length - 1);
+        return cnt;
+    }
+
+    public void mergeSort(int[] nums, int l, int r) {
+        if (l >= r) return;
+
+        int mid = l + r >> 1;
+        mergeSort(nums, l, mid);
+        mergeSort(nums, mid + 1, r);
+        merge(nums, l, mid, r);
+    }
+
+    public void merge(int[] nums, int l, int mid, int r) {
+        // int[] tmp = new int[r - l + 1];
+        int idx = 0;
+        int i = l;
+        int j = mid + 1;
+        while (i <= mid && j <= r) {
+            if (nums[i] <= nums[j]) {
+                tmp[idx++] = nums[i++];
+            } else {
+                cnt += mid - i + 1;   //  1 2 6 8 9    3 4 7    对于6 > 3 产生【6, 3】【8, 3】【9, 3】逆序对     
+                tmp[idx++] = nums[j++];
+            }
+        }
+        while (i <= mid) tmp[idx++] = nums[i++];
+        while (j <= r) tmp[idx++] = nums[j++];
+
+        for (int k = 0; k < idx; k ++ ) {
+            nums[l + k] = tmp[k];
+        }
+    }
+}
+```
+
+
+
+## 52 两个链表的第一个公共节点
+
+```java
+// 输入两个链表，找出它们的第一个公共节点。
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode curA = headA;
+        ListNode curB = headB;
+        
+        while (curA != curB) {
+            curA = curA != null ? curA.next : headB;
+            curB = curB != null ? curB.next : headA;
+        }
+
+        return curA;
     }
 }
 ```
