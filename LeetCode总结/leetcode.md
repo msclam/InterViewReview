@@ -145,7 +145,7 @@ class Solution {
 ## 07 重建二叉树
 
 ```java
-题目一： 从前序与中序遍历序列构造二叉树
+题目一： 从前序与中序遍历序列构造二叉树 lc105
 前： [1] 2  k k + 1 n
 中:  1 k - 1  [k] k + 1  n
 // 优化： 中序数字的下标用hash存储
@@ -178,7 +178,7 @@ class Solution {
     }
 }
 
-题目二： 从后序与中序遍历序列构造二叉树
+题目二： 从后序与中序遍历序列构造二叉树  lc106
 后： 1   k - 1 k  n - 1  n
 中:  1 k - 1  [k] k + 1  n 
 // 优化： 中序数字的下标用hash存储
@@ -3819,4 +3819,225 @@ public int largestRectangleArea(int[] heights) {
 
 
 # leetcode hot100
+
+
+
+# 算法模板总结
+
+## 1 八大排序
+
+**① 冒泡排序**
+
+```java
+public void bubbleSort(int[] arr, int n) {
+ 	boolean flag = true;
+    for (int i = 0; i < n - 1 && flag; i ++ ) {
+        flag = false;
+        for (int j = 0; j < n - i - 1; j ++ ) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr, j, j + 1);
+                flag = true;
+            }
+        }
+    }
+}
+
+public void swap(int[] arr, int i, int j) {
+    int t = arr[i];
+    arr[i] = arr[j];
+    arr[j] = t;
+}
+```
+
+**② 选择排序**
+
+```java
+public void selectSort(int[] arr, int n) {
+    for (int i = 0; i < n - 1; i ++ ) {
+        int min = i; // 攻擂台
+        for (int j = i; j < n; j ++ ) {
+            if (arr[j] < arr[min]) {
+                min = j;
+            }
+        }
+        swap(arr, i, min);
+    }
+}
+```
+
+**③ 快速排序**
+
+```java
+// 方式一：左右互相填充，求出标杆所在的位置，标杆左边小于它，右边大于它
+public static int partition(int[] arr, int l, int r) {
+    int x = arr[l];
+    while (l < r) {
+        while (l < r && arr[r] > x) r--;
+        arr[l] = arr[r];
+        while (l < r && arr[l] <= x) l++;
+        arr[r] = arr[l];
+    }
+    arr[l] = x;
+    return l;
+}
+
+public static void qSort(int[] arr, int l, int r) {
+    if (l >= r) return;
+    int pos = partition(arr, l, r);
+    qSort(arr, l, pos - 1);
+    quickSort(arr, pos + 1, r);
+}
+
+// 方式二直接一个函数
+public static void quickSort(int[] arr, int l, int r) {
+    if (l >= r) return;
+    int i = l, j = r, x = arr[l + r >> 1];
+    while (i < j) {
+        while (arr[i] < x) i++;
+        while (arr[j] > x) j--;
+        if (i <= j) {
+            swap(arr, i, j);
+            i++;
+            j--;
+        }
+    }
+    if (l < j) quickSort(arr, l, j);
+    if (i < r) quickSort(arr, i, r);
+}
+```
+
+**④ 归并排序**
+
+```java
+public static void mergeSrt(int[] arr, int l, int r) {
+        if (l >= r) return;
+        int mid = l + r >> 1;
+        mergeSrt(arr, l, mid);
+        mergeSrt(arr, mid + 1, r);
+        int[] tmp = new int[r - l + 1];
+        int i = l, j = mid + 1;
+        int idx = 0;
+        while (i <= mid && j <= r) {
+            if (arr[i] <= arr[j]) {
+                tmp[idx++] = arr[i++];
+            } else {
+                tmp[idx++] = arr[j++];
+            }
+        }
+        while (i <= mid) tmp[idx++] = arr[i++];
+        while (j <= r) tmp[idx++] = arr[j++];
+
+        for (int k = 0; k < idx; k ++ ) {
+            arr[l + k] = tmp[k];
+        }
+    }
+```
+
+**⑤ 堆排序**
+
+```java
+public static void down(int[] arr, int l, int r) {
+    int i = l, j = 2 * i + 1;
+    while (j <= r) {
+        if (j + 1 <= r && arr[j + 1] > arr[j]) {
+            j++;
+        }
+        if (arr[j] > arr[i]) {
+            swap(arr, j, i);
+            i = j;
+            j = 2 * i + 1;
+        } else {
+            break;
+        }
+    }
+}
+
+public static void heapSort(int[] arr, int n) {
+    // 建堆
+    for (int i = n / 2 - 1; i >= 0; i -- ) {
+        down(arr, i, n - 1);
+    }
+    for (int i = n - 1; i > 0; i -- ) {
+        swap(arr, 0, i);
+        down(arr, 0, i - 1);
+    }
+}
+```
+
+**⑥ 直接插入排序**
+
+```java
+public static void insertSort(int[] arr, int n) {
+    for (int i = 0; i < n; i ++ ) {
+        int tmp = arr[i], j;
+        for (j = i - 1; j >= 0 && arr[j] > tmp; j -- ) {
+            arr[j + 1] = arr[j];
+        }
+        arr[j + 1] = tmp;
+    }
+}
+```
+
+**⑦ 折半插入排序**
+
+```java
+public static void halfInsertSort(int[] arr, int n) {
+    for (int i = 0; i < n; i ++ ) {
+        int tmp = arr[i], j;
+        int l = 0, r = i;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (arr[mid] <= tmp) l = mid + 1;
+            else r = mid;
+        }
+        for (j = i - 1; j >= l; j -- ) {
+            arr[j + 1] = arr[j];
+        }
+        arr[j + 1] = tmp;
+    }
+}
+```
+
+**⑧ 希尔排序**
+
+```java
+public static void shellSort(int[] arr, int n) {
+    for (int dk = n / 2; dk >= 1; dk /= 2 ) {
+        for (int i = dk; i < n; i ++ ) {
+            if (arr[i - dk] > arr[i]) {
+                int tmp = arr[i], j;
+                for (j = i - dk; j >= 0 && arr[j] > tmp; j -= dk ) {
+                    arr[j + dk] = arr[j];
+                }
+                arr[j + dk] = tmp;
+            }
+        }
+    }
+}
+```
+
+## 2 二分模板
+
+```java
+// 寻找第一个x
+int l = 0, r = n - 1;
+while (l < r) {
+    int mid = l + r >> 1;
+    if (arr[mid] < x) l = mid + 1;
+    else r = mid;
+}
+if (arr[l] != x) return -1;
+return l;  // l和r都是一样的，因为l = r跳出循环
+
+
+// 寻找最后一个x
+int l = 0, r = n - 1;
+while (l < r) {
+    int mid = l + r + 1 >> 1; (注意改边界问题)
+    if (arr[mid] > x) r = nid - 1;
+    else l = mid;
+}
+if (arr[mid] != x) return -1;
+return l;
+```
 
