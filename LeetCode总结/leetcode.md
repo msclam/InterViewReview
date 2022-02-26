@@ -531,21 +531,18 @@ public:
 ```java
 实现函数 double Power(double base, int exponent)，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。
     
-class Solution {
-    public double myPow(double x, int n) {
-        long m = n;
-        if (m < 0) {
-            x = 1 / x;
-            m = -m;
-        }
-        double res = 1.0;
-        while (m != 0) {
-            if (m % 2 != 0) res *= x;
-            x = x * x;
-            m >>= 1; 
-        }
-        return res;
+public double myPow(double x, int n) {
+    if (n < 0) {
+        n = -n;
+        x = 1.0 / x;
     }
+    double res = 1.0;
+    while (n != 0) {
+        if (n % 2 != 0) res *= x;
+        x = x * x;
+        n /= 2;
+    }
+    return res;
 }
 ```
 
