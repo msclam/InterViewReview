@@ -1139,7 +1139,7 @@ class Solution {
 }
 ```
 
-## 34 二叉树中和为某一值得路径 （路径总和II）
+## 34 二叉树中和为某一值得路径 （路径总和II）lc113
 
 ```java
 输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。
@@ -1179,7 +1179,7 @@ class Solution {
 }
 ```
 
-## 34 路径总和I
+## 34 路径总和I   lc112
 
 ```java
 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum 。判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。如果存在，返回 true ；否则，返回 false 。
@@ -1217,7 +1217,7 @@ class Solution {
 ```java
 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
 
-// hash法构建新链表
+// 方法一：hash法构建新链表
 class Solution {
     public Node copyRandomList(Node head) {
         Map<Node, Node> mp = new HashMap<>();
@@ -1229,6 +1229,36 @@ class Solution {
             mp.get(p).random = mp.get(p.random);
         }
         return mp.get(head);
+    }
+}
+// 方法二：指针方法
+class Solution {
+    public Node copy(Node head) {
+        if (head == null) return null;
+        // 复制原始值
+        Node cur = head;
+        while (cur != null) {
+            Node node = new Node(cur.val);
+            node.next = cur.next;
+            cur.next = node;
+            cur = cur.next.next;
+        }
+        // 复制随机指针
+        cur = head;
+        while (cur != null) {
+            cur.next.random = cur.random == null ? null : cur.random.next;
+            cur = cur.next.next;
+        }
+        // 分裂成两个链表
+        cur = head;
+        Node copy = head.next;
+        while (cur != null) {
+            Node tmp = cur.next;
+            cur.next = tmp.next;
+            tmp.next = tmp.next == null ? null : tmp.next.next;
+            cur = cur.next;
+        }
+        return copy;
     }
 }
 ```
