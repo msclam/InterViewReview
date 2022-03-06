@@ -1454,17 +1454,27 @@ class Solution {
     
 class Solution {
     public int majorityElement(int[] nums) {
+        // 投票法
+        // int res = 0;
+        // int cnt = 0;
+        // for (int i = 0; i < nums.length; i ++ ) {
+        //     if (cnt == 0) {
+        //         res = nums[i];
+        //         cnt++;
+        //     } else {
+        //         if (res == nums[i]) cnt++;
+        //         else cnt--;
+        //     }
+        // }
+        // return res;
         int res = nums[0];
-        int cnt = 0;
+        Map<Integer, Integer> mp = new HashMap<>();
         for (int i = 0; i < nums.length; i ++ ) {
-            if (cnt == 0) {
-                res = nums[i];
-                cnt = 1;
-            } else {
-                if (res == nums[i]) cnt++;
-                else cnt--;
+            mp.put(nums[i], mp.getOrDefault(nums[i], 0) + 1);
+            if (mp.getOrDefault(nums[i], 0) > nums.length / 2) {
+                res = nums[i]; 
             }
-        }
+        } 
         return res;
     }
 }
@@ -1616,17 +1626,17 @@ hgih=1  -> 189  89+1    low + 1
 high!=1 -> 289  1 00~99  100 base
 */
 public int countDigitOne(int n) {
-        if (n < 1) return 0;
-        String s = String.valueOf(n);
-        int base = (int) Math.pow(10, s.length() - 1);
-        int high = n / base;
-        int low = n % base;
-        if (high == 1) {
-            return countDigitOne(low) + countDigitOne(base - 1) + low + 1;
-        } else {
-            return countDigitOne(low) + high * countDigitOne(base - 1) + base;
-        }
+    if (n < 1) return 0;
+    String s = String.valueOf(n);
+    int base = (int) Math.pow(10, s.length() - 1);
+    int high = n / base;
+    int low = n % base;
+    if (high == 1) {
+        return countDigitOne(low) + countDigitOne(base - 1) + low + 1;
+    } else {
+        return countDigitOne(low) + high * countDigitOne(base - 1) + base;
     }
+}
 ```
 
 ## 44 数字序列中某一位的数字
@@ -1654,7 +1664,7 @@ public int findNthDigit(int n) {
         cnt = 9 * digit * start;
     }
     long num = start + (n - 1) / digit;
-    return String.valueOf(num).charAt((n - 1) % digit) - '0';
+    return String.valueOf(num).charAt((int)((n - 1) % digit)) - '0';
 }
 ```
 
@@ -1759,6 +1769,21 @@ public int maxValue(int[][] grid) {
 
 ```java
 // 请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+// 经典滑动窗口问题
+public int lengthOfLongestSubstring(String s) {
+    char[] str = s.toCharArray();
+    Set<Character> set = new HashSet<>();
+    int len = 0;
+    int l = 0;
+    for (int r = 0; r < str.length; r ++ ) {
+        while (set.contains(str[r])) {
+            set.remove(str[l++]);
+        }
+        set.add(str[r]);
+        len = Math.max(len, r - l + 1);
+    }
+    return len;
+}
 
 public int lengthOfLongestSubstring(String s) {
     char[] str = s.toCharArray();
@@ -1844,11 +1869,11 @@ class Solution {
         if (l >= r) return;
 
         int mid = l + r >> 1;
-        mergeSort(nums, l, mid);
+        mergeSort(nums, l, mid);  // 注意左右数组都有序
         mergeSort(nums, mid + 1, r);
         merge(nums, l, mid, r);
     }
-
+	// 方法一
     public void merge(int[] nums, int l, int mid, int r) {
         // int[] tmp = new int[r - l + 1];
         int idx = 0;
@@ -1863,6 +1888,31 @@ class Solution {
             }
         }
         while (i <= mid) tmp[idx++] = nums[i++];
+        while (j <= r) tmp[idx++] = nums[j++];
+
+        for (int k = 0; k < idx; k ++ ) {
+            nums[l + k] = tmp[k];
+        }
+    }
+    // 方法二
+    public void merge(int[] nums, int l, int mid, int r) {
+        // int[] tmp = new int[r - l + 1];
+        int idx = 0;
+        int i = l;
+        int j = mid + 1;
+        while (i <= mid && j <= r) {
+            if (nums[i] <= nums[j]) {
+                tmp[idx++] = nums[i++];
+                cnt += j - (mid + 1);
+            } else {   
+                tmp[idx++] = nums[j++];
+            }
+        }
+        
+        while (i <= mid) {
+            tmp[idx++] = nums[i++]; 
+            cnt += j - (mid + 1);
+        }
         while (j <= r) tmp[idx++] = nums[j++];
 
         for (int k = 0; k < idx; k ++ ) {
@@ -2095,9 +2145,9 @@ public int[][] findContinuousSequence(int target) {
     while (l < r) {
         int sum = (l + r) * (r - l + 1) / 2;
         if (sum < target) {
-            r++;
+            r++;	// 不够大，往右扩大
         } else if (sum > target) {
-            l++;
+            l++;  // 以l为边界不存在合理的和
         } else if (sum == target) {
             int[] res = new int[r - l + 1];
             for (int i = l; i <= r; i ++ ) {
@@ -2121,19 +2171,15 @@ public int[][] findContinuousSequence(int target) {
 输出: "world! hello"
 */
 public String reverseWords(String s) {
-    String[] strs = s.split("\\s+"); // 多个或一个空格作为分割
-    int len = strs.length;
-    StringBuilder str = new StringBuilder();
-    for (int i = len - 1; i >= 0; i -- ) {
-        if (!"".equals(strs[i])) { 
+    String[] strs = s.split("\\s+");
+    StringBuffer str = new StringBuffer();
+    for (int i = strs.length - 1; i >= 0; i -- ) {
+        if (!"".equals(strs[i])) {
             str.append(strs[i]).append(" ");
         }
     }
-
-    s = str.toString();
-    len = s.length();
-
-    return len > 0 ? s.substring(0, len - 1) : "";
+    if (str.length() == 0) return "";
+    return str.deleteCharAt(str.length() - 1).toString(); 
 }
 ```
 
@@ -2186,7 +2232,17 @@ class Solution {
 
 ```java
 //给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
-
+/*
+单调队列
+q = deque()
+for i in range(n):
+    # 判断队头是否滑出窗口
+    while q and checkout_out(q[0]):
+        q.popleft()
+    while q and check(q[-1]):
+        q.pop()
+    q.append(i)
+*/
 public int[] maxSlidingWindow(int[] nums, int k) {
     if (nums == null || nums.length == 0) return new int[0];
 
@@ -2241,8 +2297,8 @@ class MaxQueue {
     
     public int pop_front() {
         if (dataQueue.isEmpty()) return -1;
-        int res = dataQueue.pollFirst();
-        if (res == maxQueue.peekFirst()) maxQueue.pollFirst();
+        int res = dataQueue.pollFirst(); // data必须弹出
+        if (res == maxQueue.peekFirst()) maxQueue.pollFirst(); 
         return res; 
     }
 }
