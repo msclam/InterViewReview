@@ -4844,9 +4844,100 @@ public int getSum(int n) {
 
 ### 4 两数之和
 
+lc 1
+
+```java
+给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+你可以按任意顺序返回答案。
+
+public int[] twoSum(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return new int[0];
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i ++ ) {
+        int gap = target - nums[i];
+        if (map.get(gap) != null) {
+            return new int[] {i, map.get(gap)};
+        }
+        map.put(nums[i], i);
+    }
+    return new int[0];
+}
+```
+
 
 
 ### 5 四数相加II
+
+lc18 四数相加
+
+```java
+给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
+
+0 <= a, b, c, d < n
+a、b、c 和 d 互不相同
+nums[a] + nums[b] + nums[c] + nums[d] == target
+
+public List<List<Integer>> fourSum(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return new ArrayList<>();
+
+    List<List<Integer>> res = new ArrayList<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length; i ++ ) {
+        if(i > 0 && nums[i] == nums[i - 1]) continue;
+        for (int j = i + 1; j < nums.length; j ++ ) {
+            if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+            int l = j + 1;
+            int r = nums.length - 1;
+            while (l < r) {
+                int sum = nums[i] + nums[j] + nums[l] + nums[r];
+                if (sum == target) {
+                    res.add(Arrays.asList(nums[i], nums[j], nums[l], nums[r]));
+                    while (l < r && nums[r] == nums[r - 1]) r--;
+                    while (l < r && nums[l] == nums[l + 1]) l++;
+                    l++;
+                    r--;
+                } else if (sum > target) {
+                    r--;
+                } else {
+                    l++;
+                }
+            }
+        } 
+    }
+    return res;
+}
+```
+
+lc454 四数相加ii
+
+```java
+给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
+
+0 <= a, b, c, d < n
+a、b、c 和 d 互不相同
+nums[a] + nums[b] + nums[c] + nums[d] == target
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i : nums1) {
+            for (int j : nums2) {
+                int tmp = i + j;
+                map.put(tmp, map.getOrDefault(tmp, 0) + 1);
+            }
+        }
+        int cnt = 0;
+        for (int i : nums3) {
+            for (int j : nums4) {
+                int tmp = i + j;
+                if (map.containsKey(0 - tmp)) {
+                    cnt += map.get(0 - tmp);
+                }
+            }
+        }
+        return cnt;
+    }
+```
 
 
 
@@ -4878,6 +4969,38 @@ public boolean canConstruct(String ransomNote, String magazine) {
 
 
 ### 7 三数之和
+
+```java
+//给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+
+注意：答案中不可以包含重复的三元组。
+
+public List<List<Integer>> threeSum(int[] nums) {
+    List<List<Integer>> res = new ArrayList<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length; i ++ ) {
+        if (nums[i] > 0) break;
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        int l = i + 1;
+        int r = nums.length - 1;
+        while (l < r) {
+            int sum = nums[i] + nums[l] + nums[r];
+            if (sum == 0) {
+                res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                while (l < r && nums[r] == nums[r - 1]) r--;
+                while (l < r && nums[l] == nums[l + 1]) l++;
+                l++;
+                r--;
+            } else if (sum > 0) {
+                r--;
+            } else {
+                l++;
+            }
+        }
+    }
+    return res;
+}
+```
 
 
 
