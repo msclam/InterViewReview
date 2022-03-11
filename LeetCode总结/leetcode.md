@@ -4654,20 +4654,15 @@ public boolean canConstruct(String ransomNote, String magazine) {
     int[] res = new int[26];
     char[] s = ransomNote.toCharArray();
     char[] t = magazine.toCharArray();
-
-    for (int i = 0; i < s.length; i ++ ) {
-        res[s[i] - 'a']++;
-    }
     for (int i = 0; i < t.length; i ++ ) {
-        if (res[t[i] - 'a'] > 0) {
-            res[t[i] - 'a']--;
-        }
+        res[t[i] - 'a']++;
     }
-    for (int i = 0; i < 26; i ++ ) {
-        if (res[i] > 0) {
+    for (int i = 0; i < s.length; i ++ ) {
+        res[s[i] - 'a']--;
+        if (res[s[i] - 'a'] < 0) {
             return false;
         }
-    } 
+    }
     return true;
 }
 ```
@@ -4772,39 +4767,119 @@ lc350 两个数组的交集II
 
     
 public int[] intersect(int[] nums1, int[] nums2) {
-    List<Integer> list = new ArrayList<>();
-    for (int i : nums1) {
-        list.add(i);
-    }
+    // List<Integer> list = new ArrayList<>();
 
+    // for (int i : nums1) {
+    //     list.add(i);
+    // }
+
+    // List<Integer> res = new ArrayList<>();
+    // for (int i : nums2) {
+    //     if (list.contains(i)) {
+    //         res.add(i);
+    //         list.remove(Integer.valueOf(i));
+    //     }
+    // }
+
+    // int[] ans = new int[res.size()];
+    // for (int i = 0; i < res.size(); i ++ ) {
+    //     ans[i] = res.get(i);
+    // }
+    // return ans;
+
+    Arrays.sort(nums1);
+    Arrays.sort(nums2);
+    int i = 0;
+    int j = 0;
     List<Integer> res = new ArrayList<>();
-    for (int i : nums2) {
-        if (list.contains(i)) {
-            res.add(i);
-            list.remove(Integer.valueOf(i));
+    while (i < nums1.length && j < nums2.length) {
+        if (nums1[i] == nums2[j]) {
+            res.add(nums1[i]);
+            i++;
+            j++;
+        } else if (nums1[i] < nums2[j]) {
+            i++;
+        } else {
+            j++;
         }
     }
-
     int[] ans = new int[res.size()];
-    for (int i = 0; i < res.size(); i ++ ) {
-        ans[i] = res.get(i);
+    for (int idx = 0; idx < res.size(); idx ++ ) {
+        ans[idx] = res.get(idx);
     }
 
     return ans;
 }
 ```
 
-
-
 ### 3 快乐数
+
+202 快乐数
+
+```java
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+
+public boolean isHappy(int n) {
+    Set<Integer> set = new HashSet<>();
+    while (n != 1 && !set.contains(n)) {
+        set.add(n);
+        n = getSum(n);
+    }
+    return n == 1;
+}
+
+public int getSum(int n) {
+    int sum = 0;
+    while (n > 0) {
+        int num = n % 10;
+        n /= 10;
+        sum += n * n;
+    }
+    return sum;
+}
+```
 
 ### 4 两数之和
 
+
+
 ### 5 四数相加II
+
+
 
 ### 6 赎金信
 
+lc383
+
+```java
+给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。
+如果可以，返回 true ；否则返回 false 。
+
+public boolean canConstruct(String ransomNote, String magazine) {
+    int[] res = new int[26];
+    char[] s = ransomNote.toCharArray();
+    char[] t = magazine.toCharArray();
+    for (int i = 0; i < t.length; i ++ ) {
+        res[t[i] - 'a']++;
+    }
+    for (int i = 0; i < s.length; i ++ ) {
+        res[s[i] - 'a']--;
+        if (res[s[i] - 'a'] < 0) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+
+
 ### 7 三数之和
+
+
 
 ### 8 四数之和
 
