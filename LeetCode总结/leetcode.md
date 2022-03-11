@@ -2364,6 +2364,22 @@ public boolean isStraight(int[] nums) {
 
     return nums[4] - nums[joker] <= 4;
 }
+
+// 方法二
+int minValue = Integer.MAX_VALUE;
+
+boolean[] t = new boolean[14];
+for (int i = 0; i < nums.length; i ++ ) {
+    if (nums[i] == 0) continue;
+
+    if (t[nums[i]] == true) return false;
+
+    t[nums[i]] = true;
+
+    maxValue = Math.max(maxValue, nums[i]);
+    minValue = Math.min(minValue, nums[i]);
+}
+return maxValue - minValue <= 4;
 ```
 
 ## 62 圆圈中最后剩下的数字
@@ -2401,7 +2417,7 @@ public int lastRemaining(int n, int m) {
 
     // // 方法三：
     // // int res = 0;
-    // // for (int i = 2; i <= n; i ++ ) {
+    // // for (int i = 1; i <= n; i ++ ) {
     // //     res = (res + m) % i;
     // // }
 
@@ -2488,30 +2504,25 @@ public int[] constructArr(int[] a) {
 在任何情况下，若函数不能进行有效的转换时，请返回 0。
     
 public int strToInt(String str) {
+    if (str == null || str.trim().length() == 0) return 0;
     char[] s = str.toCharArray();
     int i = 0;
     while (i < s.length && s[i] == ' ') i++;
-    if (i == s.length) return 0;
-
     int sign = 1;
     if (s[i] == '-') {
         sign = -1;
         i++;
-    } else if (s[i] == '+'){
+    } else if (s[i] == '+') {
         i++;
     }
 
     int res = 0;
-    int idx = 0;
+    boolean hasNum = false;
     for (; i < s.length; i ++ ) {
-        idx++;
         int num = s[i] - '0';
-        if ((num < 0 || num > 9) && idx == 1) {
-            return 0;
-        }
-        if ((num < 0 || num > 9) && idx > 1) {
-            break;
-        }
+        if ((num < 0 || num > 9) && hasNum == false) return 0;
+        if ((num < 0 || num > 9) && hasNum == true) break;
+        hasNum = true; 
         if (res > (Integer.MAX_VALUE - num) / 10) {
             return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
         }
@@ -2582,6 +2593,14 @@ class Solution {
 
         return root;
     }
+    	if (root == null) return null;
+        if (root == p || root == q) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) return root;
+        if (left != null && right == null) return left;
+        if (right != null && left == null) return right;
+        return null;
 }
 ```
 
@@ -3898,6 +3917,914 @@ public int largestRectangleArea(int[] heights) {
     return area;
 }
 ```
+
+## 数组
+
+### 1 二分查找
+
+lc704
+
+```java
+给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/binary-search
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    
+public int search(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return -1;
+    int l = 0;
+    int r = nums.length - 1;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (nums[mid] < target) l = mid + 1;
+        else r = mid;
+    }
+    if (nums[l] == target) return l;
+    else return -1; 
+}
+```
+
+lc35
+
+```java
+给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+
+请必须使用时间复杂度为 O(log n) 的算法。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/search-insert-position
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    
+public int searchInsert(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return 0;
+    int l = 0;
+    int r = nums.length; // 有可能放在最后一个位置
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (nums[mid] < target) l = mid + 1;
+        else r = mid;
+    }
+    return l;
+}
+```
+
+lc34
+
+```mysql
+public int[] searchRange(int[] nums, int target) {
+        if (nums == null || nums.length == 0) return new int[]{-1, -1};
+        int l = 0;
+        int r = nums.length - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] < target) l = mid + 1;
+            else r = mid;
+        }
+        if (nums[l] != target) return new int[]{-1, -1};
+        int t = l;
+        r = nums.length - 1;
+        while (l < r) {
+            int mid = l + r + 1>> 1;
+            if (nums[mid] > target) r = mid - 1;
+            else l = mid;
+        }
+        return new int[]{t, r};
+    }
+```
+
+lc69
+
+```java
+给你一个非负整数 x ，计算并返回 x 的 算术平方根 。
+
+由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去 。
+
+注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5 
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/sqrtx
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    
+public int mySqrt(int x) {
+    if (x == 0 || x == 1) return x;
+    int l = 1;
+    int r = x / 2;
+    while (l < r) {
+        int mid = l + (r - l + 1) / 2;
+        if (mid > x / mid) r = mid - 1;
+        else l = mid;
+    }
+    return l;
+}
+```
+
+lc367
+
+```java
+给定一个 正整数 num ，编写一个函数，如果 num 是一个完全平方数，则返回 true ，否则返回 false 。
+
+进阶：不要 使用任何内置的库函数，如  sqrt 。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/valid-perfect-square
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    
+public boolean isPerfectSquare(int num) {
+    if (num == 1) return true;
+    int l = 1;
+    int r = num / 2;
+    while (l < r) {
+        int mid = l + r + 1 >> 1;
+        if (mid > num / mid) r = mid - 1;
+        else l = mid;
+    }
+    return num == l * l;
+}
+```
+
+### 2 移除元素
+
+lc27
+
+```java
+给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度。
+    
+public int removeElement(int[] nums, int val) {
+    int idx = 0;
+    for (int i = 0; i < nums.length; i ++ ) {
+        if (val != nums[i]) {
+            nums[idx++] = nums[i];
+        }
+    }
+    return idx;
+}
+```
+
+lc 26.删除排序数组中的重复项
+
+```java
+给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。
+    
+public int removeDuplicates(int[] nums) {
+    if (nums == null) return 0;
+    if (nums.length == 0 || nums.length == 1) return 1; 
+    int slow = 1;
+    for (int fast = 1; fast < nums.length; fast ++ ) {
+        if (nums[fast] != nums[slow - 1]) {
+            nums[slow++] = nums[fast];
+        }
+    }
+    return slow;
+}
+```
+
+lc283.移动零
+
+```java
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+    
+public void moveZeroes(int[] nums) {
+    int idx = 0;
+    for (int i = 0; i < nums.length; i ++ ) {
+        if (nums[i] != 0) {
+            nums[idx++] = nums[i]; 
+        }
+    }
+    while (idx < nums.length) {
+        nums[idx++] = 0;
+    }
+}
+```
+
+lc844
+
+```java
+// 给定 s 和 t 两个字符串，当它们分别被输入到空白的文本编辑器后，如果两者相等，返回 true 。# 代表退格字符。
+
+注意：如果对空文本输入退格字符，文本继续为空。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/backspace-string-compare
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+    
+public boolean backspaceCompare(String s, String t) {
+    return check(s).equals(check(t));
+}
+
+public String check(String ss) {
+    char[] s = ss.toCharArray();
+    StringBuilder str = new StringBuilder();
+    for (int i = 0; i < s.length; i ++ ) {
+        if (s[i] != '#') {
+            str.append(s[i]);
+        } else {
+            if (str.length() - 1 >= 0) 
+                str.deleteCharAt(str.length() - 1);
+        }
+    }
+    return str.toString();
+}
+```
+
+### 3 有序数的平方
+
+lc977 
+
+```java
+给你一个按 非递减顺序 排序的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。
+    
+public int[] sortedSquares(int[] nums) {
+    int i = 0;
+    int j = nums.length - 1;
+    int[] res = new int[nums.length];
+    int idx = nums.length - 1;
+    while (i <= j) {
+        if (nums[i] * nums[i] <= nums[j] * nums[j]) {
+            res[idx--] = nums[j] * nums[j];
+            j--;
+        } else {
+            res[idx--] = nums[i] * nums[i];
+            i++;
+        }
+    }   
+    return res;
+}
+```
+
+### 4 长度最小的子数组
+
+lc209
+
+```java
+public int minSubArrayLen(int target, int[] nums) {
+    // 使用滑动窗口
+    if (nums == null || nums.length == 0) return 0;
+    int i = 0;
+    int sum = 0;;
+    int len = Integer.MAX_VALUE;
+    for (int j = 0; j < nums.length; j ++ ) {
+        sum += nums[j];
+        while (sum > target) {
+            len = Math.min(len, j - i + 1);
+            sum -= nums[i++];
+        }
+    }
+    if (len == Integer.MAX_VALUE) return 0;
+    else return len;
+}
+```
+
+lc904
+
+```java
+/*
+你正在探访一家农场，农场从左到右种植了一排果树。这些树用一个整数数组 fruits 表示，其中 fruits[i] 是第 i 棵树上的水果 种类 。
+
+你想要尽可能多地收集水果。然而，农场的主人设定了一些严格的规矩，你必须按照要求采摘水果：
+
+你只有 两个 篮子，并且每个篮子只能装 单一类型 的水果。每个篮子能够装的水果总量没有限制。
+你可以选择任意一棵树开始采摘，你必须从 每棵 树（包括开始采摘的树）上 恰好摘一个水果 。采摘的水果应当符合篮子中的水果类型。每采摘一次，你将会向右移动到下一棵树，并继续采摘。
+一旦你走到某棵树前，但水果不符合篮子的水果类型，那么就必须停止采摘。
+给你一个整数数组 fruits ，返回你可以收集的水果的 最大 数目。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/fruit-into-baskets
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+*/
+
+public int totalFruit(int[] fruits) {
+    if (fruits == null || fruits.length == 0) return 0;
+    int i = 0;
+    int res = 0;
+    HashMap<Integer, Integer> map = new HashMap<>();
+    for (int j = 0; j < fruits.length; j ++ ) {
+        map.put(fruits[j], map.getOrDefault(fruits[j], 0) + 1);
+        while (map.size() > 2) {
+            map.put(fruits[i], map.get(fruits[i]) - 1);
+            if (map.get(fruits[i]) == 0) map.remove(fruits[i]);
+            i++;
+        }
+        res = Math.max(res, j - i + 1);
+    }
+    return res;
+}
+```
+
+lc76 最小覆盖子串
+
+```java
+给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+    
+public String minWindow(String ss, String tt) {
+    if (ss == null || tt == null || ss.length() == 0 || tt.length() == 0) 
+        return "";
+
+    char[] s = ss.toCharArray();
+    char[] t = tt.toCharArray();
+    HashMap<Character, Integer> map = new HashMap<>();
+    for (int i = 0; i < t.length; i ++ ) {
+        map.put(t[i], map.getOrDefault(t[i], 0) + 1);
+    }
+
+    int len = Integer.MAX_VALUE;
+    int cnt = 0;
+    int idx = 0;
+    int i = 0;
+    for (int j = 0; j < s.length; j ++ ) {
+        if (map.containsKey(s[j])) {
+            map.put(s[j], map.get(s[j]) - 1);
+            if (map.get(s[j]) == 0) cnt++;
+        }
+        while (cnt == map.size()) {
+            int size = j - i + 1;
+            if (size < len) {
+                len = size;
+                idx = i;
+            }
+            if (map.containsKey(s[i])) {
+                map.put(s[i], map.get(s[i]) + 1);
+                if (map.get(s[i]) > 0) cnt--;
+            }
+            i++;
+        }
+    }
+    if (len == Integer.MAX_VALUE) return "";
+    else return ss.substring(idx, idx + len);
+}
+```
+
+lc54
+
+```java
+给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+    
+public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> res = new ArrayList<>();
+    if (matrix == null || matrix.length == 0) return new ArrayList<>(); 
+    int row = matrix.length;
+    int col = matrix[0].length;
+    int t = 0;
+    int b = row - 1;
+    int l = 0;
+    int r = col - 1;
+    while (true) {
+        for (int i = l; i <= r; i ++ ) res.add(matrix[t][i]);
+        if (++t > b) break;
+
+        for (int i = t; i <= b; i ++ ) res.add(matrix[i][r]);
+        if (--r < l) break;
+
+        for (int i = r; i >= l; i -- ) res.add(matrix[b][i]);
+        if (--b < t) break;
+
+        for (int i = b; i >= t; i -- ) res.add(matrix[i][l]);
+        if (++l > r) break;
+    }
+    return res;
+}
+```
+
+
+
+## 链表
+
+### 1 移除链表元素
+
+lc203 移除链表元素
+
+```java
+给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。
+    
+public ListNode removeElements(ListNode head, int val) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode cur = dummy;
+    while (cur.next != null) {
+        if (cur.next.val == val) {
+            cur.next = cur.next.next;
+        } else {
+            cur = cur.next;
+        }
+    }
+    return dummy.next;
+}
+```
+
+### 2 链表相加
+
+lc2 两数相加（首部对齐相加）
+
+```java
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode cur = dummy;
+    int carry = 0;
+    while (l1 != null || l2 != null || carry > 0) {
+        int sum = carry;
+        sum += l1 == null ? 0 : l1.val;
+        sum += l2 == null ? 0 : l2.val;
+
+        ListNode node = new ListNode(sum % 10);
+        carry = sum / 10;
+        cur.next = node;
+        cur = cur.next;
+
+        if (l1 != null) l1 = l1.next;
+        if (l2 != null) l2 = l2.next;
+    }
+    return dummy.next;
+}
+```
+
+
+
+lc445 两数相加ii（最后对其相加）
+
+```mysql
+给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
+
+你可以假设除了数字 0 之外，这两个数字都不会以零开头。
+
+ 
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/add-two-numbers-ii
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Stack<Integer> st1 = new Stack<>();
+        Stack<Integer> st2 = new Stack<>();
+
+        while (l1 != null) {
+            st1.push(l1.val);
+            l1 = l1.next;
+        }
+
+        while (l2 != null) {
+            st2.push(l2.val);
+            l2 = l2.next;
+        }
+
+        ListNode dummy = new ListNode(0);
+        ListNode pointer = dummy;
+        int carry = 0;
+        while (!st1.isEmpty() || !st2.isEmpty() || carry > 0) {
+            int sum = carry;
+            sum += st1.isEmpty() ? 0 : st1.pop();
+            sum += st2.isEmpty() ? 0 : st2.pop();
+
+            ListNode node = new ListNode(sum % 10);
+            carry = sum / 10;
+            node.next = pointer.next;
+            pointer.next = node;
+        }
+        return dummy.next;
+    }
+```
+
+### 3 设计链表
+
+707 设计链表
+
+```java
+get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+
+
+class MyLinkedList {
+    ListNode dummy;
+    int size;
+    public MyLinkedList() {
+        dummy = new ListNode(0);
+        size = 0;
+    }
+    
+    public int get(int index) {
+        if (index < 0 || index >= size) return -1;
+        ListNode cur = dummy.next;
+        while (index-- > 0) {
+            cur = cur.next;
+        }
+        return cur.val;
+    }
+    
+    public void addAtHead(int val) {
+        ListNode node = new ListNode(val);
+        node.next = dummy.next;
+        dummy.next = node;
+        size++;
+    }
+    
+    public void addAtTail(int val) {
+        ListNode node = new ListNode(val);
+        ListNode cur = dummy;
+        while (cur.next != null) {
+            cur = cur.next;
+        }
+        cur.next = node;
+        size++;
+    }
+    
+    public void addAtIndex(int index, int val) {
+        if (index < 0 || index > size) return;
+        ListNode node = new ListNode(val);
+        ListNode cur = dummy;
+        while (index-- > 0) {
+            cur = cur.next;
+        }
+        node.next = cur.next;
+        cur.next = node;
+        size++;
+    }
+    
+    public void deleteAtIndex(int index) {
+        if (index < 0 || index >= size) return;
+        ListNode cur = dummy;
+        while (index-- > 0) {
+            cur = cur.next;
+        }
+        cur.next = cur.next.next;
+        size--;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+    public ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+    public ListNode() {}
+}
+```
+
+### 4 翻转链表
+
+```java
+public ListNode reverseList(ListNode head) {
+    // 递归
+    // if (head == null || head.next == null) return head;
+    // ListNode nHead = reverseList(head.next);
+    // head.next.next = head;
+    // head.next = null;
+    // return nHead;
+
+    // 迭代
+    if (head == null || head.next == null) return head;
+
+    ListNode pre = null;
+    ListNode cur = head;
+    ListNode tmp = null;
+    while (cur != null) {
+        tmp = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = tmp;
+    }
+    return pre;
+}
+```
+
+### 5 两两交换链表中的节点
+
+lc24
+
+![24.两两交换链表中的节点1](leetcode.assets/24.两两交换链表中的节点1.png)
+
+```java
+给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+    
+public ListNode swapPairs(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode cur = dummy;
+    while (cur.next != null && cur.next.next != null) {
+        ListNode tmp1 = cur.next;
+        ListNode tmp2 = cur.next.next.next;
+
+        cur.next = cur.next.next;
+        cur.next.next = tmp1;
+        cur.next.next.next = tmp2;
+
+        cur = cur.next.next;
+    }
+    return dummy.next;
+}
+```
+
+### 6 删除链表的倒数第N个节点
+
+```java
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+
+进阶：你能尝试使用一趟扫描实现吗？
+    
+public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode slow = dummy;
+    ListNode fast = dummy;
+
+    while (n-- > 0 && fast != null) {
+        fast = fast.next;
+    }
+
+    fast = fast.next; // 因为要删除第n个，所以要找删除那个的前一个
+
+    while (fast != null) {
+        fast = fast.next;
+        slow = slow.next;
+    }
+
+    slow.next = slow.next.next;
+    return dummy.next;
+}
+```
+
+### 7 链表相交
+
+```java
+面试题：02.07 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。
+    
+public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    ListNode curA = headA;
+    ListNode curB = headB;
+
+    while (curA != curB) {
+        curA = curA == null ? headB : curA.next;
+        curB = curB == null ? headA : curB.next;
+    }
+    return curA;
+}
+```
+
+### 8 环形链表问题
+
+lc141 环形链表
+
+```java
+给你一个链表的头节点 head ，判断链表中是否有环。
+    
+public boolean hasCycle(ListNode head) {
+    ListNode fast = head;
+    ListNode slow = head;
+    while (fast != null && fast.next != null) {
+        fast = fast.next.next;
+        slow = slow.next;
+        if (fast == slow) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+lc142 环形链表II
+
+```java
+给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+不允许修改 链表
+
+public ListNode detectCycle(ListNode head) {
+    // 2*(x+y) = x+y+n*(y+z)
+    ListNode fast = head;
+    ListNode slow = head;
+    while (fast != null && fast.next != null) {
+        fast = fast.next.next;
+        slow = slow.next;
+        if (fast == slow) {
+            ListNode curA = head;
+            ListNode curB = slow;
+            while (curA != curB) {
+                curA = curA.next;
+                curB = curB.next;
+            }
+            return curA;
+        }
+    }
+    return null;
+}
+```
+
+## 哈希表
+
+### 1 有效的字母异位词
+
+lc242 
+
+```java
+给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+    
+public boolean isAnagram(String s, String t) {
+    char[] ss = s.toCharArray();
+    char[] tt = t.toCharArray();
+    int[] res = new int[26];
+    for (int i = 0; i < ss.length; i ++ ) {
+        res[ss[i] - 'a']++;
+    }
+
+    for (int i = 0; i < tt.length; i ++ ) {
+        res[tt[i] - 'a']--;
+    }
+
+    for (int i = 0; i < 26; i ++ ) {
+        if (res[i] != 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+```
+
+lc383
+
+```java
+给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。
+如果可以，返回 true ；否则返回 false 。
+magazine 中的每个字符只能在 ransomNote 中使用一次。
+
+public boolean canConstruct(String ransomNote, String magazine) {
+    int[] res = new int[26];
+    char[] s = ransomNote.toCharArray();
+    char[] t = magazine.toCharArray();
+
+    for (int i = 0; i < s.length; i ++ ) {
+        res[s[i] - 'a']++;
+    }
+    for (int i = 0; i < t.length; i ++ ) {
+        if (res[t[i] - 'a'] > 0) {
+            res[t[i] - 'a']--;
+        }
+    }
+    for (int i = 0; i < 26; i ++ ) {
+        if (res[i] > 0) {
+            return false;
+        }
+    } 
+    return true;
+}
+```
+
+lc49 字母异位词分组
+
+```java
+给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+
+字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+    
+public List<List<String>> groupAnagrams(String[] strs) {
+    if (strs == null || strs.length == 0) return new ArrayList<>();
+
+    Map<String, List> map = new HashMap<>();
+    for (String s : strs) {
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        String key = String.valueOf(chars);
+        if (!map.containsKey(key)) {
+            map.put(key, new ArrayList<>());
+        }
+        map.get(key).add(s);
+    }
+
+    return new ArrayList(map.values());
+}
+```
+
+lc438 找到字符串中的所有字母异位词
+
+```java
+//给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+
+public List<Integer> findAnagrams(String ss, String pp) {
+    char[] s = ss.toCharArray();
+    char[] p = pp.toCharArray();
+
+    int[] scnt = new int[26];
+    int[] pcnt = new int[26];
+    for (int i = 0; i < p.length; i ++ ) {
+        pcnt[p[i] - 'a']++;
+    }
+    List<Integer> res = new ArrayList<>();
+    int i = 0;
+    for (int j = 0; j < s.length; j ++ ) {
+        scnt[s[j] - 'a']++;
+        while (scnt[s[j] - 'a'] > pcnt[s[j] - 'a']) {
+            scnt[s[i] - 'a']--;
+            i++;
+        }
+        if (j - i + 1 == p.length) {
+            res.add(i);
+        }
+    }
+    return res;
+}
+```
+
+
+
+### 2 两个数组的交集
+
+lc349 两个数组的交集
+
+```java
+给定两个数组 nums1 和 nums2 ，返回 它们的交集 。输出结果中的每个元素一定是 唯一 的。我们可以 不考虑输出结果的顺序 。
+
+public int[] intersection(int[] nums1, int[] nums2) {
+    Set<Integer> set1 = new HashSet<>();
+    Set<Integer> set2 = new HashSet<>();
+
+    for (int i : nums1) {
+        set1.add(i);
+    }
+
+    for (int i : nums2) {
+        set2.add(i);
+    }
+
+    List<Integer> res = new ArrayList<>();
+    for (int i : set1) {
+        if (set2.contains(i)) {
+            res.add(i);
+        }
+    }
+
+    int[] ans = new int[res.size()];
+    for (int i = 0; i < res.size(); i ++ ) {
+        ans[i] = res.get(i);
+    }
+
+    return ans;
+}
+```
+
+lc350 两个数组的交集II
+
+```java
+给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+
+    
+public int[] intersect(int[] nums1, int[] nums2) {
+    List<Integer> list = new ArrayList<>();
+    for (int i : nums1) {
+        list.add(i);
+    }
+
+    List<Integer> res = new ArrayList<>();
+    for (int i : nums2) {
+        if (list.contains(i)) {
+            res.add(i);
+            list.remove(Integer.valueOf(i));
+        }
+    }
+
+    int[] ans = new int[res.size()];
+    for (int i = 0; i < res.size(); i ++ ) {
+        ans[i] = res.get(i);
+    }
+
+    return ans;
+}
+```
+
+
+
+### 3 快乐数
+
+### 4 两数之和
+
+### 5 四数相加II
+
+### 6 赎金信
+
+### 7 三数之和
+
+### 8 四数之和
+
+
+
+## 字符串
+
+## 双指针法
+
+## 栈与队列
+
+## 二叉树
+
+## 回溯算法
+
+## 贪心算法
+
+## 动态规划
+
+## 单调栈
 
 
 
